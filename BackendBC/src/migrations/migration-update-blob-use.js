@@ -1,19 +1,13 @@
+'use strict';
+
 module.exports = {
-    up: (queryInterface, Sequelize) => {
-        return Promise.all([
-            queryInterface.changeColumn('Users', 'image', {
-                type: Sequelize.BLOB('long'),
-                allowNull: true,
-            })
-        ])
+    up: async (queryInterface, Sequelize) => {
+        // Chuyển đổi kiểu dữ liệu cột "image" sang BYTEA
+        await queryInterface.sequelize.query('ALTER TABLE "Users" ALTER COLUMN "image" TYPE BYTEA USING "image"::bytea');
     },
 
-    down: (queryInterface, Sequelize) => {
-        return Promise.all([
-            queryInterface.changeColumn('Users', 'image', {
-                type: Sequelize.STRING,
-                allowNull: true,
-            })
-        ])
+    down: async (queryInterface, Sequelize) => {
+        // Quay lại kiểu dữ liệu ban đầu, ví dụ là VARCHAR
+        await queryInterface.sequelize.query('ALTER TABLE "Users" ALTER COLUMN "image" TYPE VARCHAR USING "image"::varchar');
     }
 };
