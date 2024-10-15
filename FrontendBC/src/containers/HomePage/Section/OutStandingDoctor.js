@@ -6,6 +6,7 @@ import { getAllDoctors } from '../../../services/userService';
 import * as actions from '../../../store/actions';
 import { LANGUAGES } from '../../../utils';
 import { withRouter } from 'react-router';
+import { Buffer } from 'buffer';
 
 class OutStandingDoctor extends Component {
     constructor(props) {
