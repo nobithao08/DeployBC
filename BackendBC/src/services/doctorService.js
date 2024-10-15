@@ -524,7 +524,6 @@ let getListPatientForDoctor = (doctorId, date) => {
     })
 }
 
-
 // let sendRemedy = (data) => {
 //     return new Promise(async (resolve, reject) => {
 //         resolve({
