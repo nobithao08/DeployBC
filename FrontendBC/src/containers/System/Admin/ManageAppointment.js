@@ -1,0 +1,196 @@
+import React, { Component } from 'react';
+import { connect } from "react-redux";
+import { getAllBookings, postVerifyBookAppointment } from "../../../services/userService";
+import './ManageAppointment.scss';
+import { toast } from 'react-toastify';
+import { FormattedMessage } from 'react-intl';
+
+class AdminBookingManagement extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            newBookings: [],
+            confirmedBookings: [],
+            completedBookings: [],
+            canceledBookings: [],
+            loading: true,
+            error: null,
+            activeTab: 'new',
+            // successMessage: null,
+        };
+    }
+
+    async componentDidMount() {
+        try {
+            let res = await getAllBookings();
+            if (res && res.errCode === 0) {
+                const bookings = res.data;
+
+                const newBookings = bookings.filter(b => b.statusId === 'S1');
+                const confirmedBookings = bookings.filter(b => b.statusId === 'S2');
+                const completedBookings = bookings.filter(b => b.statusId === 'S3');
+                const canceledBookings = bookings.filter(b => b.statusId === 'S4');
+
+                this.setState({
+                    newBookings,
+                    confirmedBookings,
+                    completedBookings,
+                    canceledBookings,
+                    loading: false,
+                });
+            } else {
+                this.setState({ error: res.errMessage, loading: false });
+            }
+        } catch (error) {
+            this.setState({ error: 'Failed to fetch bookings', loading: false });
+        }
+    }
+
+    handleVerifyBooking = async (token, doctorId) => {
+        try {
+            let res = await postVerifyBookAppointment({ token, doctorId });
+            if (res && res.errCode === 0) {
+                toast.success('Đặt lịch hẹn thành công!');
+
+                const verifiedBooking = this.state.newBookings.find(booking => booking.token === token);
+
+                this.setState(prevState => ({
+                    newBookings: prevState.newBookings.filter(booking => booking.token !== token),
+                    confirmedBookings: [...prevState.confirmedBookings, { ...verifiedBooking, statusId: 'S2' }]
+                }));
+            } else {
+                toast.error('Vui lòng điền đầy đủ thông tin!');
+            }
+        } catch (error) {
+            console.error('Error verifying booking:', error);
+            toast.error('Có lỗi xảy ra trong quá trình xác nhận lịch hẹn.');
+        }
+    };
+
+
+    handleCompleteBooking = (bookingId) => {
+        this.setState(prevState => ({
+            confirmedBookings: prevState.confirmedBookings.map(booking =>
+                booking.id === bookingId ? { ...booking, statusId: 'S3' } : booking
+            ),
+            completedBookings: [...prevState.completedBookings, ...prevState.confirmedBookings.filter(booking => booking.id === bookingId)]
+        }));
+    };
+
+    handleCancelBooking = (token) => {
+        const canceledBooking = this.state.newBookings.find(booking => booking.token === token);
+
+        this.setState(prevState => ({
+            newBookings: prevState.newBookings.filter(booking => booking.token !== token),
+            canceledBookings: [...prevState.canceledBookings, { ...canceledBooking, statusId: 'S4' }]
+        }));
+
+        toast.success('Đã hủy lịch hẹn thành công!');
+    };
+
+
+
+    getTimeDisplay = (timeType) => {
+        switch (timeType) {
+            case 'T1': return '8:00 AM - 9:00 AM';
+            case 'T2': return '9:00 AM - 10:00 AM';
+            case 'T3': return '10:00 AM - 11:00 AM';
+            case 'T4': return '11:00 AM - 12:00 PM';
+            case 'T5': return '1:00 PM - 2:00 PM';
+            case 'T6': return '2:00 PM - 3:00 PM';
+            case 'T7': return '3:00 PM - 4:00 PM';
+            case 'T8': return '5:00 PM - 6:00 PM';
+            default: return 'Unknown';
+        }
+    };
+
+    handleTabChange = (tab) => {
+        this.setState({ activeTab: tab });
+    };
+
+    render() {
+        const { loading, error, activeTab } = this.state;
+        const { newBookings, confirmedBookings, completedBookings, canceledBookings } = this.state;
+
+        if (loading) return <div>Loading bookings...</div>;
+        if (error) return <div>Error: {error}</div>;
+
+        const renderTable = (bookings, title, showActions = false) => (
+            <div className="table-container">
+                <h3>{title}</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th><FormattedMessage id="manage-appointment.patientName" /></th>
+                            <th><FormattedMessage id="manage-appointment.email" /></th>
+                            <th><FormattedMessage id="manage-appointment.phone" /></th>
+                            <th><FormattedMessage id="manage-appointment.reason" /></th>
+                            <th><FormattedMessage id="manage-appointment.doctor" /></th>
+                            <th><FormattedMessage id="manage-appointment.date" /></th>
+                            <th><FormattedMessage id="manage-appointment.time" /></th>
+                            {showActions && <th><FormattedMessage id="manage-appointment.actions" /></th>}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {bookings.map((booking) => (
+                            <tr key={booking.id}>
+                                <td>{booking.patientData.firstName} {booking.patientData.lastName || ''}</td>
+                                <td>{booking.patientData.email}</td>
+                                <td>{booking.patientData.phonenumber}</td>
+                                <td>{booking.reason}</td>
+                                <td>{booking.doctorInfo.firstName} {booking.doctorInfo.lastName || ''}</td>
+                                <td>{new Date(Number(booking.date)).toLocaleDateString()}</td>
+                                <td>{this.getTimeDisplay(booking.timeType)}</td>
+                                {showActions && (
+                                    <td>
+                                        <button className="btn-confirm" onClick={() => this.handleVerifyBooking(booking.token, booking.doctorId)}>
+                                            <FormattedMessage id="manage-appointment.confirm" defaultMessage="Xác Nhận" />
+                                        </button>
+                                        <button className="btn-cancel" onClick={() => this.handleCancelBooking(booking.token)}>
+                                            <FormattedMessage id="manage-appointment.cancel" defaultMessage="Hủy" />
+                                        </button>
+                                    </td>
+                                )}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
+
+        return (
+            <div className="admin-booking-management">
+                <h2><FormattedMessage id="manage-appointment.title" /></h2>
+
+                <div className="tab-container">
+                    <button onClick={() => this.handleTabChange('new')}>
+                        <FormattedMessage id="manage-appointment.new" />
+                    </button>
+                    <button onClick={() => this.handleTabChange('confirmed')}>
+                        <FormattedMessage id="manage-appointment.confirmed" />
+                    </button>
+                    <button onClick={() => this.handleTabChange('completed')}>
+                        <FormattedMessage id="manage-appointment.completed" />
+                    </button>
+                    <button onClick={() => this.handleTabChange('canceled')}>
+                        <FormattedMessage id="manage-appointment.canceled" />
+                    </button>
+                </div>
+
+                {/* Hiển thị bảng dựa trên activeTab */}
+                {activeTab === 'new' && renderTable(newBookings, <FormattedMessage id="manage-appointment.new" />, true)}
+                {activeTab === 'confirmed' && renderTable(confirmedBookings, <FormattedMessage id="manage-appointment.confirmed" />)}
+                {activeTab === 'completed' && renderTable(completedBookings, <FormattedMessage id="manage-appointment.completed" />)}
+                {activeTab === 'canceled' && renderTable(canceledBookings, <FormattedMessage id="manage-appointment.canceled" />)}
+            </div>
+        );
+    }
+}
+
+const mapStateToProps = state => {
+    return {
+        language: state.app.language,
+    };
+};
+
+export default connect(mapStateToProps)(AdminBookingManagement);

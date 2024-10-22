@@ -28,10 +28,10 @@ let postBookAppointment = (data) => {
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing parameter'
-                })
+                });
             } else {
-
                 let token = uuidv4();
+
                 await emailService.sendSimpleEmail({
                     reciverEmail: data.email,
                     patientName: data.fullName,
@@ -39,9 +39,9 @@ let postBookAppointment = (data) => {
                     doctorName: data.doctorName,
                     language: data.language,
                     redirectLink: buildUrlEmail(data.doctorId, token)
-                })
+                });
 
-                //upsert patient
+                // upsert patient
                 let user = await db.User.findOrCreate({
                     where: { email: data.email },
                     defaults: {
@@ -49,11 +49,12 @@ let postBookAppointment = (data) => {
                         roleId: 'R3',
                         gender: data.selectedGender,
                         address: data.address,
-                        firstName: data.fullName
+                        firstName: data.fullName,
+                        phonenumber: data.phonenumber
                     },
                 });
 
-                //create a booking record
+                // create a booking record
                 if (user && user[0]) {
                     await db.Booking.findOrCreate({
                         where: { patientId: user[0].id },
@@ -63,20 +64,32 @@ let postBookAppointment = (data) => {
                             patientId: user[0].id,
                             date: data.date,
                             timeType: data.timeType,
-                            token: token
+                            token: token,
+                            birthDate: data.birthDate,
+                            reason: data.reason
                         }
-                    })
+                    });
+
+                    // Logic để xóa thời gian đã đặt
+                    await db.Schedule.destroy({
+                        where: {
+                            doctorId: data.doctorId,
+                            date: data.date,
+                            timeType: data.timeType
+                        }
+                    });
                 }
                 resolve({
                     errCode: 0,
-                    errMessage: 'Save infor patient succeed!'
-                })
+                    errMessage: 'Save infor patient succeed! Time slot removed.'
+                });
             }
         } catch (e) {
             reject(e);
         }
-    })
+    });
 }
+
 
 // let postVerifyBookAppointment = (data) => {
 //     return new Promise(async (resolve, reject) => {
@@ -87,14 +100,53 @@ let postBookAppointment = (data) => {
 //     })
 // }
 
-let postVerifyBookAppointment = (data) => {
+// let postVerifyBookAppointment = (data) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             if (!data.token || !data.doctorId) {
+//                 resolve({
+//                     errCode: 1,
+//                     errMessage: 'Missing parameter'
+//                 })
+//             } else {
+//                 let appointment = await db.Booking.findOne({
+//                     where: {
+//                         doctorId: data.doctorId,
+//                         token: data.token,
+//                         statusId: 'S1'
+//                     },
+//                     raw: false
+//                 })
+//                 if (appointment) {
+//                     appointment.statusId = 'S2';
+//                     await appointment.save();
+
+//                     resolve({
+//                         errCode: 0,
+//                         errMessage: "Update the appointment succed!"
+//                     })
+//                 }
+//                 else {
+//                     resolve({
+//                         errCode: 2,
+//                         errMessage: "Appointment has been activated or dose not exist"
+//                     })
+//                 }
+//             }
+//         } catch (e) {
+//             reject(e);
+//         }
+//     })
+// }
+
+let postVerifyBookAppointment = async (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             if (!data.token || !data.doctorId) {
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing parameter'
-                })
+                });
             } else {
                 let appointment = await db.Booking.findOne({
                     where: {
@@ -102,31 +154,102 @@ let postVerifyBookAppointment = (data) => {
                         token: data.token,
                         statusId: 'S1'
                     },
-                    raw: false
-                })
+                    include: [
+                        {
+                            model: db.User,
+                            as: 'patientData',
+                            attributes: ['firstName', 'lastName', 'email', 'phonenumber']
+                        },
+                        {
+                            model: db.User,
+                            as: 'doctorInfo',
+                            attributes: ['firstName', 'lastName']
+                        }
+                    ],
+                    raw: false,
+                    nest: true
+                });
+
                 if (appointment) {
                     appointment.statusId = 'S2';
                     await appointment.save();
 
-                    resolve({
-                        errCode: 0,
-                        errMessage: "Update the appointment succed!"
-                    })
-                }
-                else {
+                    if (appointment.patientData && appointment.patientData.email && appointment.doctorInfo) {
+                        await emailService.sendSimpleEmailSuccess({
+                            reciverEmail: appointment.patientData.email,
+                            patientName: appointment.patientData.firstName,
+                            time: appointment.timeType,
+                            doctorName: `${appointment.doctorInfo.firstName} ${appointment.doctorInfo.lastName}`,
+                            language: data.language || 'vi'
+                        });
+
+                        resolve({
+                            errCode: 0,
+                            errMessage: "Update the appointment succeeded and email sent!"
+                        });
+                    } else {
+                        resolve({
+                            errCode: 3,
+                            errMessage: "Missing patient or doctor data"
+                        });
+                    }
+                } else {
                     resolve({
                         errCode: 2,
-                        errMessage: "Appointment has been activated or dose not exist"
-                    })
+                        errMessage: "Appointment has been activated or does not exist"
+                    });
                 }
             }
         } catch (e) {
             reject(e);
         }
-    })
-}
+    });
+};
+
+
+
+
+let getAllBookings = async () => {
+    try {
+        let bookings = await db.Booking.findAll({
+            include: [
+                {
+                    model: db.User,
+                    as: 'patientData',
+                    attributes: ['firstName', 'lastName', 'email', 'phonenumber']
+                },
+                {
+                    model: db.User,
+                    as: 'doctorInfo',
+                    attributes: ['firstName', 'lastName']
+                }
+            ],
+            raw: false,
+            nest: true
+        });
+
+        // console.log('Bookings fetched:', JSON.stringify(bookings, null, 2)); // In ra thông tin booking chi tiết
+
+        return {
+            errCode: 0,
+            data: bookings
+        };
+    } catch (error) {
+        console.log('Error fetching bookings:', error);
+        return {
+            errCode: 1,
+            errMessage: 'Failed to fetch bookings'
+        };
+    }
+};
+
+
+
+
+
 
 module.exports = {
     postBookAppointment: postBookAppointment,
-    postVerifyBookAppointment: postVerifyBookAppointment
+    postVerifyBookAppointment: postVerifyBookAppointment,
+    getAllBookings: getAllBookings,
 }

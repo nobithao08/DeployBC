@@ -65,7 +65,7 @@ class ManageSpecialty extends Component {
     handleSaveNewSpecialty = async () => {
         let res = await createNewSpecialty(this.state)
         if (res && res.errCode === 0) {
-            toast.success('Add new specialty succeeds!')
+            toast.success('Thêm chuyên ngành mới thành công!')
             this.setState({
                 name: '',
                 imageBase64: '',
@@ -73,7 +73,7 @@ class ManageSpecialty extends Component {
                 descriptionMarkdown: '',
             })
         } else {
-            toast.error('Something wrongs....')
+            toast.error('Vui lòng cung cấp đầy đủ thông tin!')
         }
     }
 

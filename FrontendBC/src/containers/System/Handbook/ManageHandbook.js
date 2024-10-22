@@ -65,7 +65,7 @@ class ManageHandbook extends Component {
     handleSaveNewHandbook = async () => {
         let res = await createNewHandbook(this.state)
         if (res && res.errCode === 0) {
-            toast.success('Add new specialty succeeds!')
+            toast.success('Thêm cẩm nang mới thành công!')
             this.setState({
                 name: '',
                 imageBase64: '',
@@ -73,7 +73,7 @@ class ManageHandbook extends Component {
                 descriptionMarkdown: '',
             })
         } else {
-            toast.error('Something wrongs....')
+            toast.error('Vui lòng cung cấp đầy đủ thông tin!')
         }
     }
 

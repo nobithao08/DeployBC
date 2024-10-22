@@ -101,15 +101,15 @@ class ManagePatient extends Component {
             this.setState({
                 isShowLoading: false
             })
-            toast.success('Send Remedy succeeds:');
+            toast.success('Gửi phản hồi thành công:');
             this.closeRemedyModal();
             await this.getDataPatient();
         } else {
             this.setState({
                 isShowLoading: false
             })
-            toast.error('Something wrongs....');
-            console.log('error send remedy: ', res)
+            toast.error('Vui lòng cung cấp đầy đủ thông tin!');
+            // console.log('error send remedy: ', res)
         }
     }
 

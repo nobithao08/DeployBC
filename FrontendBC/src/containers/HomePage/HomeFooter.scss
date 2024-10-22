@@ -1,8 +1,11 @@
 .home-footer {
     background-color: #cbe8eb;
-    // color: #fff;
     padding: 40px 20px;
     height: 180px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    margin-top: auto; 
 
     .footer-container {
         display: flex;

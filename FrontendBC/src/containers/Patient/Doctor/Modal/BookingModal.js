@@ -13,6 +13,7 @@ import { postPatientBookAppointment } from '../../../../services/userService';
 import { toast } from "react-toastify";
 import moment from 'moment';
 import LoadingOverlay from 'react-loading-overlay';
+import { withRouter } from 'react-router-dom';
 
 class BookingModal extends Component {
 
@@ -20,7 +21,7 @@ class BookingModal extends Component {
         super(props);
         this.state = {
             fullName: '',
-            phoneNumber: '',
+            phonenumber: '',
             email: '',
             address: '',
             reason: '',
@@ -47,6 +48,8 @@ class BookingModal extends Component {
                 object.label = language === LANGUAGES.VI ? item.valueVi : item.valueEn;
                 object.value = item.keyMap;
                 result.push(object)
+
+                return object;
             })
         }
         return result;
@@ -138,7 +141,7 @@ class BookingModal extends Component {
 
         let res = await postPatientBookAppointment({
             fullName: this.state.fullName,
-            phoneNumber: this.state.fullName,
+            phonenumber: this.state.phonenumber,
             email: this.state.email,
             address: this.state.address,
             reason: this.state.reason,
@@ -157,10 +160,24 @@ class BookingModal extends Component {
         })
 
         if (res && res.errCode === 0) {
-            toast.success('Booking a new appointment succeed!')
+            toast.success('Đặt lịch hẹn thành công!')
+            if (this.props.history) {
+                this.props.history.push('/booking-success');
+            }
+            this.setState({
+                fullName: '',
+                phonenumber: '',
+                email: '',
+                address: '',
+                reason: '',
+                birthday: '',
+                selectedGender: '',
+                doctorId: '',
+                timeType: ''
+            });
             this.props.closeBookingClose();
         } else {
-            toast.error('Booking a new appointment error!')
+            toast.error('Vui lòng điền đầy đủ thông tin!')
         }
 
     }
@@ -221,8 +238,8 @@ class BookingModal extends Component {
                                         <FormattedMessage id="patient.booking-modal.phoneNumber" />
                                     </label>
                                     <input className="form-control"
-                                        value={this.state.phoneNumber}
-                                        onChange={(event) => this.handleOnchangeInput(event, 'phoneNumber')}
+                                        value={this.state.phonenumber}
+                                        onChange={(event) => this.handleOnchangeInput(event, 'phonenumber')}
 
                                     />
                                 </div>
@@ -300,4 +317,6 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BookingModal);
+// export default connect(mapStateToProps, mapDispatchToProps)(BookingModal);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BookingModal));
+

@@ -34,32 +34,23 @@ let getBodyHTMLEmail = (dataSend) => {
         <div><b>Thời gian: ${dataSend.time}</b></div>
         <div><b>Bác sĩ: ${dataSend.doctorName}</b></div>
 
-        <p>Nếu các thông tin trên chính xác, vui lòng click vào đường link bên dưới
-            để xác nhận và hoàn tất thủ tục đặt lịch khám bệnh.
-        </p>
-        <div>
-        <a href=${dataSend.redirectLink} target="_blank" >Click here</a>
-        </div>
-        <div> Mọi thắc mắc vui lòng xin liên hệ 0989988998</div>
-        <div> Xin chân thành cảm ơn!</div>
+           <div><b> Trạng thái lịch hẹn: Lịch hẹn đang chờ xác nhận</b></div>
+           <p>Hệ thống Booking Care sẽ tự động gửi email thông báo khi lịch hẹn được xác nhận hoàn tất. Xin vui lòng chờ!</p>
+        <p> Booking Care xin chân thành cảm ơn!</p>
         `
     }
     if (dataSend.language === 'en') {
         result =
             `
-        <h3>Dear ${dataSend.patientName}!</h3>
-        <p>You received this email because you booked an online medical appointment on Booking Care.</p>
-        <p>Information to schedule an appointment:</p>
+              <h3>Hi ${dataSend.patientName}!</h3>
+        <p>You are receiving this email because you have booked an appointment online on Booking Care.</p>
+        <p>Appointment information:</p>
         <div><b>Time: ${dataSend.time}</b></div>
         <div><b>Doctor: ${dataSend.doctorName}</b></div>
 
-        <p>If the above information is true, please click on the link below to confirm and complete the procedure to book an appointment.
-        </p>
-        <div>
-        <a href=${dataSend.redirectLink} target="_blank" >Click here</a>
-        </div>
-      <div> For any questions please contact 0989988998</div>
-        <div> Sincerely thank!</div>
+           <div><b>Appointment Status: Appointment pending confirmation/b></div>
+           <p>Booking Care system will automatically send notification email when appointment is confirmed. Please wait.</p>
+        <p>Booking Care sincerely thanks!</p>
         `
     }
 
@@ -130,7 +121,61 @@ let sendAttachment = async (dataSend) => {
     })
 }
 
+let sendSimpleEmailSuccess = async (dataSend) => {
+    // console.log("Data to send in email:", dataSend);
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: process.env.EMAIL_APP, // generated ethereal user
+            pass: process.env.EMAIL_APP_PASSWORD, // generated ethereal password
+        },
+    });
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: '"Booking Care" <btpthaovvk@gmail.com>', // sender address
+        to: dataSend.reciverEmail, // list of receivers
+        subject: "Thông tin đặt lịch khám bệnh", // Subject line
+        html: getBodyHTMLEmailSuccess(dataSend),
+    });
+
+}
+
+let getBodyHTMLEmailSuccess = (dataSend) => {
+    let result = ''
+    if (dataSend.language === 'vi') {
+        result =
+            `
+        <h3>Xin chào ${dataSend.patientName}!</h3>
+        <p>Bạn nhận được email này vì đã đặt lịch khám bệnh online trên Booking Care.</p>
+
+           <div>Hệ thống Booking Care gửi email xin thông báo: <b> Lịch hẹn đăng ký thành công</b></div>
+
+           <p>Hệ thống Booking Care cảm ơn bạn đã tin tưởng và sử dụng</p>
+        <p> Xin chân thành cảm ơn!</p>
+        `
+    }
+    if (dataSend.language === 'en') {
+        result =
+            `
+              <h3>Hi ${dataSend.patientName}!</h3>
+        <p>You are receiving this email because you have booked an appointment online on Booking Care.</p>
+     <div>Booking Care system sends email to notify: <b> Successful appointment registration</b></div>
+           <p> Appointment Status: Appointment pending confirmation</p>
+           <p>Booking Care system thanks you for your trust and use.</p>
+        <p> Sincerely thank!</p>
+        `
+    }
+
+    return result;
+}
+
 module.exports = {
     sendSimpleEmail: sendSimpleEmail,
-    sendAttachment: sendAttachment
+    sendAttachment: sendAttachment,
+    sendSimpleEmailSuccess: sendSimpleEmailSuccess
 }

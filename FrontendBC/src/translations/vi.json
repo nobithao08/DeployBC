@@ -25,6 +25,7 @@
         "admin": {
             "manage-user": "Người dùng",
             "manage-doctor": "Quản lý bác sĩ",
+            "manage-appointment": "Quản lý lịch hẹn",
             "manage-admin": "Quản lý admin",
             "crud": "CRUD user",
             "crud-redux": "Quản lý người dùng",
@@ -106,6 +107,23 @@
         "name": "Tên cẩm nang",
         "image": "Ảnh cẩm nang",
         "save": "Lưu thông tin"
+    },
+    "manage-appointment": {
+        "title": "Quản lý lịch hẹn",
+        "new": "Lịch hẹn mới",
+        "confirmed": "Đã xác nhận",
+        "completed": "Đã khám xong",
+        "canceled": "Đã hủy",
+        "patientName": "Tên bệnh nhân",
+        "email": "Email",
+        "phone": "Số điện thoại",
+        "reason": "Lý do khám",
+        "doctor": "Bác sĩ",
+        "date": "Ngày",
+        "time": "Thời gian",
+        "actions": "Hành động",
+        "confirm": "Xác nhận",
+        "cancel": "Hủy"
     },
     "patient": {
         "detail-doctor": {

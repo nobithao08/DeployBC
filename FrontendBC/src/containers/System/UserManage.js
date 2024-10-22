@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
+// import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import './UserManage.scss';
 import { getAllUsers, createNewUserService, deteleUserService, editUserService } from '../../services/userService';
@@ -127,8 +127,8 @@ class UserManage extends Component {
                         editUser={this.doEditUser}
                     />
                 }
-                <div className="title text-center">Manage users</div>
-                <div className="mx-1">
+                <div className="title text-center">GIAO DIỆN TRANG QUẢN LÝ</div>
+                {/* <div className="mx-1">
                     <button
                         className="btn btn-primary px-3"
                         onClick={() => this.handleAddNewUser()}
@@ -162,7 +162,7 @@ class UserManage extends Component {
                             }
                         </tbody>
                     </table>
-                </div>
+                </div> */}
             </div>
         );
     }

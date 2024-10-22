@@ -515,8 +515,6 @@ let getListPatientForDoctor = (doctorId, date) => {
                     errCode: 0,
                     data: data
                 })
-
-
             }
         } catch (e) {
             reject(e);

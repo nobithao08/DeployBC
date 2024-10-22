@@ -1,0 +1,104 @@
+.admin-booking-management {
+    padding: 20px;
+
+    h2 {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .tab-container {
+        display: flex; // Sử dụng Flexbox
+        justify-content: center; // Căn giữa các phần tử
+        margin-bottom: 20px;
+
+        button {
+            margin: 0 10px;
+            margin-right: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #ffc400;
+            color: white;
+            border: none;
+            border-radius: 5px;
+
+            &:hover {
+                background-color: #d6af2e;
+            }
+        }
+    }
+
+    .table-container {
+        margin-top: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        overflow: hidden;
+
+        h3 {
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+
+            thead {
+                background-color: #e9ecef;
+                th {
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                }
+            }
+
+            tbody {
+                tr {
+                    &:nth-child(even) {
+                        background-color: #f2f2f2;
+                    }
+
+                    td {
+                        padding: 10px;
+                        border: 1px solid #ddd;
+                    }
+                }
+            }
+        }
+        .btn-confirm {
+            background-color: #007bff; /* Màu xanh lá cho nút Xác Nhận */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        
+            &:hover {
+                background-color: #1059a7; /* Tối màu khi hover */
+            }
+        }
+        
+        .btn-cancel {
+            background-color: #f44336; /* Màu đỏ cho nút Hủy */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        
+            &:hover {
+                background-color: #bd1e1b; /* Tối màu khi hover */
+            }
+        }
+        
+    }
+}

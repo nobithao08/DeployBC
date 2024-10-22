@@ -9,7 +9,6 @@ import { FormattedMessage } from 'react-intl';
 import BookingModal from './Modal/BookingModal';
 
 class DoctorSchedule extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -34,9 +33,7 @@ class DoctorSchedule extends Component {
         this.setState({
             allDays: allDays,
         })
-
     }
-
 
     capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -55,7 +52,6 @@ class DoctorSchedule extends Component {
                     let labelVi = moment(new Date()).add(i, 'days').format('dddd - DD/MM');
                     object.label = this.capitalizeFirstLetter(labelVi)
                 }
-
             } else {
                 if (i === 0) {
                     let ddMM = moment(new Date()).format('DD/MM');
@@ -65,7 +61,6 @@ class DoctorSchedule extends Component {
                     object.label = moment(new Date()).add(i, 'days').locale('en').format("ddd - DD/MM");
                 }
             }
-
             object.value = moment(new Date()).add(i, 'days').startOf('day').valueOf();
             allDays.push(object);
         }
@@ -99,7 +94,6 @@ class DoctorSchedule extends Component {
                     allAvalableTime: res.data ? res.data : []
                 })
             }
-
         }
     }
 
@@ -108,7 +102,6 @@ class DoctorSchedule extends Component {
             isOpenModalBooking: true,
             dataScheduleTimeModal: time
         })
-        console.log('check time:', time)
     }
 
     closeBookingClose = () => {
@@ -120,22 +113,21 @@ class DoctorSchedule extends Component {
     render() {
         let { allDays, allAvalableTime, isOpenModalBooking, dataScheduleTimeModal } = this.state;
         let { language } = this.props;
+        let currentTime = moment();
+
+        const uniqueAvailableTimes = new Set();
+
         return (
             <>
                 <div className="doctor-schedule-container">
                     <div className="all-schedule">
                         <select onChange={(event) => this.handleOnChangeSelect(event)}>
                             {allDays && allDays.length > 0 &&
-                                allDays.map((item, index) => {
-                                    return (
-                                        <option
-                                            value={item.value}
-                                            key={index}
-                                        >
-                                            {item.label}
-                                        </option>
-                                    )
-                                })}
+                                allDays.map((item, index) => (
+                                    <option value={item.value} key={index}>
+                                        {item.label}
+                                    </option>
+                                ))}
                         </select>
                     </div>
                     <div className="all-available-time">
@@ -145,25 +137,45 @@ class DoctorSchedule extends Component {
                             </i>
                         </div>
                         <div className="time-content">
-                            {allAvalableTime && allAvalableTime.length > 0 ?
+                            {allAvalableTime && allAvalableTime.length > 0 ? (
                                 <>
                                     <div className="time-content-btns">
                                         {allAvalableTime.map((item, index) => {
-                                            let timeDisplay = language === LANGUAGES.VI ?
-                                                item.timeTypeData.valueVi : item.timeTypeData.valueEn;
-                                            return (
-                                                <button
-                                                    key={index}
-                                                    className={language === LANGUAGES.VI ? 'btn-vie' : 'btn-en'}
-                                                    onClick={() => this.handleClickScheduleTime(item)}
-                                                >
-                                                    {timeDisplay}
-                                                </button>
-                                            )
-                                        })
-                                        }
-                                    </div>
+                                            let hourOffset;
+                                            let timeDisplay;
 
+                                            switch (item.timeType) {
+                                                case 'T1': hourOffset = 8; break;
+                                                case 'T2': hourOffset = 9; break;
+                                                case 'T3': hourOffset = 10; break;
+                                                case 'T4': hourOffset = 11; break;
+                                                case 'T5': hourOffset = 13; break;
+                                                case 'T6': hourOffset = 14; break;
+                                                case 'T7': hourOffset = 15; break;
+                                                case 'T8': hourOffset = 17; break;
+                                                default: hourOffset = 0;
+                                            }
+
+                                            timeDisplay = language === LANGUAGES.VI ? item.timeTypeData.valueVi : item.timeTypeData.valueEn;
+                                            let timeFromDB = moment(parseInt(item.date)).startOf('day').add(hourOffset, 'hours');
+                                            let isPastTime = currentTime.isSameOrAfter(timeFromDB);
+
+
+                                            if (!isPastTime && !uniqueAvailableTimes.has(timeDisplay)) {
+                                                uniqueAvailableTimes.add(timeDisplay);
+                                                return (
+                                                    <button
+                                                        key={index}
+                                                        className={language === LANGUAGES.VI ? 'btn-vie' : 'btn-en'}
+                                                        onClick={() => this.handleClickScheduleTime(item)}
+                                                    >
+                                                        {timeDisplay}
+                                                    </button>
+                                                );
+                                            }
+                                            return null;
+                                        })}
+                                    </div>
                                     <div className="book-free">
                                         <span>
                                             <FormattedMessage id="patient.detail-doctor.choose" />
@@ -172,12 +184,11 @@ class DoctorSchedule extends Component {
                                         </span>
                                     </div>
                                 </>
-                                :
+                            ) : (
                                 <div className="no-schedule">
                                     <FormattedMessage id="patient.detail-doctor.no-schedule" />
                                 </div>
-                            }
-
+                            )}
                         </div>
                     </div>
                 </div>
@@ -189,6 +200,8 @@ class DoctorSchedule extends Component {
             </>
         );
     }
+
+
 }
 
 const mapStateToProps = state => {

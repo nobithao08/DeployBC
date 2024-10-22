@@ -26,6 +26,7 @@
             "manage-user": "Users System",
             "manage-doctor": "Manage doctors",
             "manage-admin": "Manage admins",
+            "manage-appointment": "Manage appointment",
             "crud": "CRUD user",
             "crud-redux": "Manage users",
             "clinic": "Clinics",
@@ -106,6 +107,23 @@
         "name": "Handbook name",
         "image": "Handbook photos",
         "save": "Save infor"
+    },
+    "manage-appointment": {
+        "title": "Manage appointment",
+        "new": "New appointment",
+        "confirmed": "Confirmed",
+        "completed": "Check done",
+        "canceled": "Canceled",
+        "patientName": "Patient name",
+        "email": "Email",
+        "phone": "Phone number",
+        "reason": "Reason for medical examination",
+        "doctor": "Doctor",
+        "date": "Date",
+        "time": "Time",
+        "actions": "Actions",
+        "confirm": "Confirm",
+        "cancel": "Cancel"
     },
     "patient": {
         "detail-doctor": {

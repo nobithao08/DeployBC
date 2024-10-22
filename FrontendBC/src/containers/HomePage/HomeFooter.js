@@ -27,16 +27,16 @@ class HomeFooter extends Component {
                         </div>
                         <div className="footer-contact">
                             <p>
-                                <FormattedMessage id="homefooter.footer.company-name" />: BookingCare
+                                <FormattedMessage id="homefooter.footer.company-name" />: BookingCare with Nobi
                             </p>
                             <p>
                                 <FormattedMessage id="homefooter.footer.address" />: 123 ABC Street, District 1, Ho Chi Minh City
                             </p>
                             <p>
-                                <FormattedMessage id="homefooter.footer.phone" />: +84 123 456 789
+                                <FormattedMessage id="homefooter.footer.phone" />: 1900 00 11 22
                             </p>
                             <p>
-                                <FormattedMessage id="homefooter.footer.email" />: support@bookingcare.com
+                                <FormattedMessage id="homefooter.footer.email" />: btpthaovvk@gmail.com
                             </p>
                         </div>
                         <div className="footer-social">

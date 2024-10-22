@@ -22,6 +22,8 @@ import AllHandbook from './Patient/Handbook/AllHandbook.js';
 import AllClinic from './Patient/Clinic/AllClinic.js';
 import AllSpecialty from './Patient/Specialty/AllSpecialty.js';
 import AllDoctor from './Patient/Doctor/AllDoctors.js';
+import BookingSuccess from './Patient/Doctor/Modal/BookingSuccess.js'
+// import BookingModal from './Patient/Doctor/Modal/BookingModal.js';
 
 class App extends Component {
 
@@ -65,7 +67,8 @@ class App extends Component {
                                     <Route path={path.ALL_SPECIALTIES} component={AllSpecialty} />
                                     <Route path={path.ALL_DOCTORS} component={AllDoctor} />
 
-
+                                    <Route path="/booking-success" component={BookingSuccess} />
+                                    {/* <Route path="/" component={BookingModal} /> */}
                                     <Route path={path.VERIFY_EMAIL_BOOKING} component={VerifyEmail} />
                                 </Switch>
                             </CustomScrollbars>

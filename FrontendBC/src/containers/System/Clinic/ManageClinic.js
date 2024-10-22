@@ -68,7 +68,7 @@ class ManageClinic extends Component {
 
         let res = await createNewClinic(this.state)
         if (res && res.errCode === 0) {
-            toast.success('Add new clinic succeeds!')
+            toast.success('Thêm phòng khám mới thành công!')
             this.setState({
                 name: '',
                 imageBase64: '',
@@ -77,7 +77,7 @@ class ManageClinic extends Component {
                 descriptionMarkdown: '',
             })
         } else {
-            toast.error('Something wrongs....')
+            toast.error('Vui lòng cung cấp đầy đủ thông tin!')
         }
     }
 

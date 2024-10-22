@@ -32,9 +32,22 @@ let postVerifyBookAppointment = async (req, res) => {
     }
 }
 
+let getAllBookings = async (req, res) => {
+    try {
+        let result = await patientService.getAllBookings();
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error('Error fetching bookings:', error); // In ra lỗi
+        return res.status(500).json({
+            errCode: 1,
+            errMessage: 'Error from server: ' + error.message,
+        });
+    }
+};
 
 
 module.exports = {
     postBookAppointment: postBookAppointment,
-    postVerifyBookAppointment: postVerifyBookAppointment
+    postVerifyBookAppointment: postVerifyBookAppointment,
+    getAllBookings: getAllBookings
 }

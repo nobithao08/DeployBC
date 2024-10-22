@@ -1,0 +1,35 @@
+.booking-success-container {
+    text-align: center;
+    margin-top: 50px;
+
+    .doctor-info {
+        margin-top: 20px;
+
+        .doctor-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+    }
+
+    a {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #1b70df;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+
+        &:hover {
+            background-color: #1829c5;
+        }
+    }
+}

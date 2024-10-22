@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             // define association here
             Booking.belongsTo(models.User,
                 { foreignKey: 'patientId', targetKey: 'id', as: 'patientData' })
-
+            Booking.belongsTo(models.User, { foreignKey: 'doctorId', targetKey: 'id', as: 'doctorInfo' }) // Bác sĩ
             Booking.belongsTo(models.Allcode, {
                 foreignKey: 'timeType', targetKey: 'keyMap',
                 as: 'timeTypeDataPatient'
@@ -27,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
         date: DataTypes.STRING,
         timeType: DataTypes.STRING,
         token: DataTypes.STRING,
+        birthDate: DataTypes.STRING, // Thêm trường ngày sinh
+        reason: DataTypes.STRING, // Thêm trường lý do khám
     }, {
         sequelize,
         modelName: 'Booking',

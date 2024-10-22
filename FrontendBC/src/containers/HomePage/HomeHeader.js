@@ -114,8 +114,11 @@ class HomeHeader extends Component {
                         </div>
 
                         <div className='right-content'>
-                            <div className="support"><i className="fas fa-question-circle"></i>
-                                <FormattedMessage id="homeheader.support" />
+                            <div className="support">
+                                <a href="https://www.facebook.com/profile.php?id=61566821611802" target="_blank" rel="noopener noreferrer">
+                                    <i className="fas fa-question-circle"></i>
+                                    <FormattedMessage id="homeheader.support" />
+                                </a>
                             </div>
                             <div className={language === LANGUAGES.VI ? 'language-vi active' : 'language-vi'}>
                                 <span onClick={() => this.changeLanguage(LANGUAGES.VI)}>VN</span>
