@@ -1,28 +1,26 @@
 .login-background {
-    // background: rgb(34,193,195);
     height: 100vh;
     background: #dee2e6;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Canh giữa theo chiều dọc */
 
     .login-container {
         width: 400px;
         border-radius: 5px;
         background-color: white;
-        position: absolute;
-        margin: auto;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        left: 0;
         height: 450px;
+        padding: 20px; /* Thêm padding nội vi nếu cần */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Tạo hiệu ứng bóng đổ để rõ ràng hơn */
 
         .login-content {
-            padding: 10px;
+            padding: 0; /* Loại bỏ padding thừa */
 
             .text-login {
                 text-align: center;
                 font-weight: 600;
                 font-size: 35px;
-                padding-top: 20px;
+                padding-top: 10px; /* Giảm padding nếu cần */
                 padding-bottom: 10px;
             }
 
@@ -34,7 +32,7 @@
 
                     i {
                         position: absolute;
-                        right: 5px;
+                        right: 10px;
                         top: 10px;
                         cursor: pointer;
                     }
@@ -43,20 +41,19 @@
 
             .btn-login {
                 width: 100%;
-                margin: 20px 0;
                 height: 40px;
-                // border-radius: 15px;
                 outline: none;
                 border: none;
                 background: black;
                 color: white;
+                border-radius: 5px; /* Bo góc nhẹ */
             }
 
             .forgot-password {
                 font-size: 12px;
-
+                text-align: center; /* Căn giữa */
+                margin-top: 5px; /* Khoảng cách trên với nút login */
             }
-
         }
     }
 }

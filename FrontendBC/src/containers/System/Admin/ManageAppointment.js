@@ -16,7 +16,8 @@ class AdminBookingManagement extends Component {
             loading: true,
             error: null,
             activeTab: 'new',
-            // successMessage: null,
+            currentPage: 1,
+            bookingsPerPage: 5,
         };
     }
 
@@ -67,7 +68,6 @@ class AdminBookingManagement extends Component {
         }
     };
 
-
     handleCompleteBooking = (bookingId) => {
         this.setState(prevState => ({
             confirmedBookings: prevState.confirmedBookings.map(booking =>
@@ -88,8 +88,6 @@ class AdminBookingManagement extends Component {
         toast.success('Đã hủy lịch hẹn thành công!');
     };
 
-
-
     getTimeDisplay = (timeType) => {
         switch (timeType) {
             case 'T1': return '8:00 AM - 9:00 AM';
@@ -105,18 +103,40 @@ class AdminBookingManagement extends Component {
     };
 
     handleTabChange = (tab) => {
-        this.setState({ activeTab: tab });
+        this.setState({ activeTab: tab, currentPage: 1 });
+    };
+
+    handleNextPage = () => {
+        this.setState(prevState => ({ currentPage: prevState.currentPage + 1 }));
+    };
+
+    handlePreviousPage = () => {
+        this.setState(prevState => ({ currentPage: prevState.currentPage - 1 }));
     };
 
     render() {
-        const { loading, error, activeTab } = this.state;
+        const { loading, error, activeTab, currentPage, bookingsPerPage } = this.state;
         const { newBookings, confirmedBookings, completedBookings, canceledBookings } = this.state;
 
         if (loading) return <div>Loading bookings...</div>;
         if (error) return <div>Error: {error}</div>;
 
+        const totalBookings = activeTab === 'new' ? newBookings.length :
+            activeTab === 'confirmed' ? confirmedBookings.length :
+                activeTab === 'completed' ? completedBookings.length :
+                    canceledBookings.length;
+
+        const totalPages = Math.ceil(totalBookings / bookingsPerPage);
+        const indexOfLastBooking = currentPage * bookingsPerPage;
+        const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
+
+        const currentBookings = activeTab === 'new' ? newBookings.slice(indexOfFirstBooking, indexOfLastBooking) :
+            activeTab === 'confirmed' ? confirmedBookings.slice(indexOfFirstBooking, indexOfLastBooking) :
+                activeTab === 'completed' ? completedBookings.slice(indexOfFirstBooking, indexOfLastBooking) :
+                    canceledBookings.slice(indexOfFirstBooking, indexOfLastBooking);
+
         const renderTable = (bookings, title, showActions = false) => (
-            <div className="table-container">
+            <div className=" table-container">
                 <h3>{title}</h3>
                 <table>
                     <thead>
@@ -138,17 +158,18 @@ class AdminBookingManagement extends Component {
                                 <td>{booking.patientData.email}</td>
                                 <td>{booking.patientData.phonenumber}</td>
                                 <td>{booking.reason}</td>
-                                <td>{booking.doctorInfo.firstName} {booking.doctorInfo.lastName || ''}</td>
+                                <td>{booking.doctorInfo.lastName} {booking.doctorInfo.firstName || ''}</td>
                                 <td>{new Date(Number(booking.date)).toLocaleDateString()}</td>
                                 <td>{this.getTimeDisplay(booking.timeType)}</td>
                                 {showActions && (
                                     <td>
                                         <button className="btn-confirm" onClick={() => this.handleVerifyBooking(booking.token, booking.doctorId)}>
-                                            <FormattedMessage id="manage-appointment.confirm" defaultMessage="Xác Nhận" />
+                                            <i className="fas fa-check"></i>
                                         </button>
                                         <button className="btn-cancel" onClick={() => this.handleCancelBooking(booking.token)}>
-                                            <FormattedMessage id="manage-appointment.cancel" defaultMessage="Hủy" />
+                                            <i className="fas fa-times"></i>
                                         </button>
+
                                     </td>
                                 )}
                             </tr>
@@ -159,38 +180,56 @@ class AdminBookingManagement extends Component {
         );
 
         return (
-            <div className="admin-booking-management">
-                <h2><FormattedMessage id="manage-appointment.title" /></h2>
-
-                <div className="tab-container">
-                    <button onClick={() => this.handleTabChange('new')}>
-                        <FormattedMessage id="manage-appointment.new" />
-                    </button>
-                    <button onClick={() => this.handleTabChange('confirmed')}>
-                        <FormattedMessage id="manage-appointment.confirmed" />
-                    </button>
-                    <button onClick={() => this.handleTabChange('completed')}>
-                        <FormattedMessage id="manage-appointment.completed" />
-                    </button>
-                    <button onClick={() => this.handleTabChange('canceled')}>
-                        <FormattedMessage id="manage-appointment.canceled" />
-                    </button>
+            <div className="admin-booking-management main-content">
+                <div className="manage-appointment-title">
+                    <FormattedMessage id="manage-appointment.title" />
                 </div>
+                <div className='all'>
+                    <div className="tab-container">
+                        <button onClick={() => this.handleTabChange('new')}>
+                            <FormattedMessage id="manage-appointment.new" />
+                        </button>
+                        <button onClick={() => this.handleTabChange('confirmed')}>
+                            <FormattedMessage id="manage-appointment.confirmed" />
+                        </button>
+                        <button onClick={() => this.handleTabChange('completed')}>
+                            <FormattedMessage id="manage-appointment.completed" />
+                        </button>
+                        <button onClick={() => this.handleTabChange('canceled')}>
+                            <FormattedMessage id="manage-appointment.canceled" />
+                        </button>
+                    </div>
 
-                {/* Hiển thị bảng dựa trên activeTab */}
-                {activeTab === 'new' && renderTable(newBookings, <FormattedMessage id="manage-appointment.new" />, true)}
-                {activeTab === 'confirmed' && renderTable(confirmedBookings, <FormattedMessage id="manage-appointment.confirmed" />)}
-                {activeTab === 'completed' && renderTable(completedBookings, <FormattedMessage id="manage-appointment.completed" />)}
-                {activeTab === 'canceled' && renderTable(canceledBookings, <FormattedMessage id="manage-appointment.canceled" />)}
+                    {/* Hiển thị bảng dựa trên activeTab */}
+                    {activeTab === 'new' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.new" />, true)}
+                    {activeTab === 'confirmed' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.confirmed" />, false)}
+                    {activeTab === 'completed' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.completed" />, false)}
+                    {activeTab === 'canceled' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.canceled" />, false)}
+
+                    {/* Phân trang */}
+                    <div className="pagination">
+                        <button
+                            onClick={this.handlePreviousPage}
+                            disabled={currentPage === 1}
+                        >
+                            &laquo; Trước
+                        </button>
+                        <span>{`Trang ${currentPage} / ${totalPages}`}</span>
+                        <button
+                            onClick={this.handleNextPage}
+                            disabled={currentPage === totalPages}
+                        >
+                            Tiếp &raquo;
+                        </button>
+                    </div>
+                </div>
             </div>
         );
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        language: state.app.language,
-    };
-};
+const mapStateToProps = (state) => ({
+    language: state.app.language,
+});
 
 export default connect(mapStateToProps)(AdminBookingManagement);

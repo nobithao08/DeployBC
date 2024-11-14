@@ -80,38 +80,38 @@ class ManageHandbook extends Component {
     render() {
 
         return (
-            <div className="manage-handbook-container">
+            <div className="manage-handbook-container main-content">
                 <div className="ms-title"><FormattedMessage id="manage-handbook.title" /></div>
+                <div className='all'>
+                    <div className="add-new-handbook row">
+                        <div className="col-6 form-group">
+                            <label><FormattedMessage id="manage-handbook.name" /> </label>
+                            <input className="form-control" type="text" value={this.state.name}
+                                onChange={(event) => this.handleOnChangeInput(event, 'name')}
+                            />
 
-                <div className="add-new-handbook row">
-                    <div className="col-6 form-group">
-                        <label><FormattedMessage id="manage-handbook.name" /> </label>
-                        <input className="form-control" type="text" value={this.state.name}
-                            onChange={(event) => this.handleOnChangeInput(event, 'name')}
-                        />
-
-                    </div>
-                    <div className="col-6 form-group">
-                        <label><FormattedMessage id="manage-handbook.image" /></label>
-                        <input className="form-control-file" type="file"
-                            onChange={(event) => this.handleOnchangeImage(event)}
-                        />
-                    </div>
-                    <div className="col-12">
-                        <MdEditor
-                            style={{ height: '300px' }}
-                            renderHTML={text => mdParser.render(text)}
-                            onChange={this.handleEditorChange}
-                            value={this.state.descriptionMarkdown}
-                        />
-                    </div>
-                    <div className="col-12">
-                        <button className="btn-save-handbook"
-                            onClick={() => this.handleSaveNewHandbook()}
-                        ><FormattedMessage id="manage-handbook.save" /></button>
+                        </div>
+                        <div className="col-6 form-group">
+                            <label><FormattedMessage id="manage-handbook.image" /></label>
+                            <input className="form-control-file" type="file"
+                                onChange={(event) => this.handleOnchangeImage(event)}
+                            />
+                        </div>
+                        <div className="col-12">
+                            <MdEditor
+                                style={{ height: '300px' }}
+                                renderHTML={text => mdParser.render(text)}
+                                onChange={this.handleEditorChange}
+                                value={this.state.descriptionMarkdown}
+                            />
+                        </div>
+                        <div className="col-12">
+                            <button className="btn-save-handbook"
+                                onClick={() => this.handleSaveNewHandbook()}
+                            ><FormattedMessage id="manage-handbook.save" /></button>
+                        </div>
                     </div>
                 </div>
-
             </div>
         );
     }

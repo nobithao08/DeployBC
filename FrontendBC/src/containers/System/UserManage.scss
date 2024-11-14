@@ -39,7 +39,6 @@
     }
 }
 
-
 .btn-delete {
     width: 50px;
     border: none;
@@ -61,7 +60,6 @@
             button.close {
                 position: absolute;
                 right: 5px;
-                /* Căn chỉnh nút đóng cách biên phải */
                 top: 50%;
                 transform: translateY(-50%);
                 background-color: transparent !important;
@@ -107,3 +105,4 @@
     }
 
 }
+

@@ -20,3 +20,148 @@
     }
 
 }
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    box-sizing: border-box;
+}
+
+.user-redux-container {
+    padding: 20px;
+    background-color: #f4f7fc;
+    border-radius: 8px;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.user-redux-body {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button.btn {
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-right: 15px;
+}
+
+button.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+button.btn-info:hover {
+    background-color: #138496;
+    border-color: #117a8b;
+}
+
+button.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+button.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+button.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+button.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+}
+
+.form-control {
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    height: 40px;
+    font-size: 14px;
+}
+
+label {
+    font-weight: 500;
+    color: #555;
+}
+
+.container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.col-3 {
+    flex: 0 0 23%;
+}
+
+.d-flex.justify-content-center {
+    justify-content: center;
+}
+
+.add-user {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+}
+
+.table th, .table td {
+    text-align: left;
+    padding: 12px;
+}
+
+.table th {
+    background-color: #007bff;
+    color: white;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+input, select {
+    border-radius: 5px;
+}
+
+input:focus, select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.dashboard-title {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #333;
+}

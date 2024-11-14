@@ -20,40 +20,78 @@ div._loading_overlay_wrapper {
         padding: 0 20px;
 
         .table-manange-patient {
-
-            table,
-            th,
-            td {
-                border         : 1px solid black;
+            width: 100%;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        
+            table {
+                width: 100%;
                 border-collapse: collapse;
+                margin-top: 15px;
             }
-
-            th,
+        
+            th, td {
+                padding: 12px;
+                text-align: center;
+                border-bottom: 1px solid #ddd;
+                font-size: 14px;
+            }
+        
+            th {
+                background-color: #b1bcc2;
+                color: #333;
+                font-weight: 600;
+            }
+        
             td {
-                padding   : 5px;
-                text-align: left;
+                background-color: #ffffff;
             }
-
-            button {
-                border : none;
-                outline: none;
-                cursor : pointer;
+        
+            tr:nth-child(even) td {
+                background-color: #ffffff;
             }
-
+        
+            tr:hover td {
+                background-color: #f1f1f3;
+            }
+        
             .mp-btn-confirm {
-                margin-right : 10px;
-                height       : 30px;
-                border-radius: 3px;
-                background   : orange;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                font-size: 13px;
+                cursor: pointer;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
             }
-
-            .mp-btn-remedy {
-
-                height       : 30px;
-                border-radius: 3px;
-                background   : #007bff;
+        
+            .mp-btn-confirm:hover {
+                background-color: #0056b3;
             }
-
+ 
+            td[colspan="6"] {
+                font-style: italic;
+                color: #999;
+            }
         }
+        
     }
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.col-4 {
+    flex: 0 0 31%;
+    padding-left: 15px;
+    padding-right: 15px;
+    box-sizing: border-box;
+}
+
+.form-control, .react-select__control, .DatePicker__input {
+    width: 100%;
 }

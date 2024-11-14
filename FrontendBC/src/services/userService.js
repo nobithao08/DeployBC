@@ -118,6 +118,23 @@ const getAllBookings = () => {
     return axios.get(`/api/get-all-bookings`);
 }
 
+const searchSpecialty = (query) => {
+    return axios.get('/api/get-specialty/search', {
+        params: { query },
+    });
+};
+
+const getStatsByMonth = () => {
+    return axios.get('/api/stats-by-month');
+};
+
+const getDoctorStatsByMonth = () => {
+    return axios.get('/api/stats-doctor-by-month');
+};
+
+
+
+
 export {
     handleLoginApi, getAllUsers,
     createNewUserService, deteleUserService,
@@ -133,5 +150,6 @@ export {
     createNewHandbook,
     getAllHandbook, getAllDetailHandbookById,
     getAllPatientForDoctor, postSendRemedy,
-    getAllBookings
+    getAllBookings, searchSpecialty,
+    getStatsByMonth, getDoctorStatsByMonth
 }

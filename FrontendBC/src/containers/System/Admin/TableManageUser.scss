@@ -1,44 +1,174 @@
 #TableManageUser {
-    font-family: Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
 }
 
-#TableManageUser td,
-#TableManageUser th {
-    border: 1px solid #ddd;
-    padding: 8px;
+#TableManageUser thead {
+    background-color: #f8f9fa;
+    color: #343a40;
 }
 
-#TableManageUser tr:nth-child(even) {
-    background-color: #f2f2f2;
+#TableManageUser th, #TableManageUser td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
 #TableManageUser tr:hover {
-    background-color: #ddd;
+    background-color: #f1f1f1;
 }
 
-#TableManageUser th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #0071ba;
+#TableManageUser .btn-edit,
+#TableManageUser .btn-delete {
+    background-color: #007bff;
+    border: none;
     color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#TableManageUser .btn-edit:hover {
+    background-color: #0056b3;
+}
+
+#TableManageUser .btn-delete {
+    background-color: #dc3545;
+}
+
+#TableManageUser .btn-delete:hover {
+    background-color: #c82333;
 }
 
 .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 10px;
     margin-top: 20px;
+}
 
-    button {
-        margin: 0 5px;
-        padding: 5px 10px;
+.pagination button {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination button:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+.pagination span {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    box-sizing: border-box;
+}
+.all-user {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+#TableManageUser {
+    width: 100%;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th, td {
+        padding: 12px;
+ 
+        border-bottom: 1px solid #ddd;
+        font-size: 14px;
+    }
+
+    th {
+        background-color: #b1bcc2;
+        color: #333;
+        font-weight: 600;
+    }
+
+    td {
+        background-color: #ffffff;
+    }
+
+    tr:nth-child(even) td {
+        background-color: #ffffff;
+    }
+
+    tr:hover td {
+        background-color: #f1f1f3;
+    }
+
+    .mp-btn-confirm {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        font-size: 13px;
         cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
     }
 
-    span {
-        margin: 0 10px;
+    .mp-btn-confirm:hover {
+        background-color: #0056b3;
     }
+
+    td[colspan="6"] {
+        font-style: italic;
+        color: #999;
+    }
+}
+td {
+    text-align: center;
+}
+
+button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.btn-edit {
+    color: green;
+    margin-right: 10px;
+}
+
+.btn-delete {
+    color: red;
+}
+
+.btn-edit:hover {
+    background-color: #f0f0f0;
+}
+
+.btn-delete:hover {
+    background-color: #f0f0f0;
 }

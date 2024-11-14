@@ -1,7 +1,7 @@
 {
     "homeheader": {
         "speciality": "Chuyên khoa",
-        "searchdoctor": "Tìm bác sĩ theo chuyên khoa",
+        "searchdoctor": "Tìm chuyên khoa khám bệnh",
         "health-facility": "Cơ sở y tế",
         "select-room": "Chọn bệnh viện phòng khám",
         "doctor": "Bác sĩ",
@@ -19,13 +19,18 @@
         "child3": "Khám tổng quát",
         "child4": "Xét nghiệm y học",
         "child5": "Sức khỏe tinh thần",
-        "child6": "Khám nha khoa"
+        "child6": "Khám nha khoa",
+        "noResults": "Không tìm thấy chuyên khoa nào."
     },
     "menu": {
         "admin": {
+            "manage-home": "Bảng điều khiển",
+            "home": "Trang chủ",
             "manage-user": "Người dùng",
             "manage-doctor": "Quản lý bác sĩ",
             "manage-appointment": "Quản lý lịch hẹn",
+            "manage-chart": "Quản lý thống kê lịch hẹn",
+            "manage-chart-doctor": "Quản lý thống kê lịch hẹn bác sĩ",
             "manage-admin": "Quản lý admin",
             "crud": "CRUD user",
             "crud-redux": "Quản lý người dùng",
@@ -34,6 +39,7 @@
             "specialty": "Chuyên khoa",
             "manage-specialty": "Quản lý chuyên khoa",
             "handbook": "Cẩm nang",
+            "chart": "Thống kê",
             "manage-handbook": "Quản lý cẩm nang"
         },
         "doctor": {
@@ -43,7 +49,7 @@
     },
     "manage-user": {
         "title": "Quản lý người dùng",
-        "add": "Thêm mới người dùng",
+        "add": "Thông tin người dùng",
         "all": "Tất cả người dùng",
         "email": "Email",
         "password": "Mật khẩu",
@@ -125,6 +131,14 @@
         "confirm": "Xác nhận",
         "cancel": "Hủy"
     },
+    "manage-statistics": {
+        "title": "Quản lý thống kê lịch hẹn",
+        "new": "Lịch hẹn mới",
+        "confirmed": "Đã xác nhận",
+        "completed": "Đã khám xong",
+        "canceled": "Đã hủy",
+        "patientName": "Tên bệnh nhân"
+    },
     "patient": {
         "detail-doctor": {
             "schedule": "Lịch khám",
@@ -157,7 +171,7 @@
     },
     "admin": {
         "manage-doctor": {
-            "title": "Tạo thêm thông tin bác sĩ",
+            "title": "Quản lý thông tin bác sĩ",
             "select-doctor": "Chọn bác sĩ",
             "intro": "Thông tin giới thiệu:",
             "add": "Tạo thông tin",

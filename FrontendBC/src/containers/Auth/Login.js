@@ -107,9 +107,9 @@ class Login extends Component {
                         <div className="col-12 ">
                             <button className="btn-login" onClick={() => { this.handleLogin() }}>Đăng nhập</button>
                         </div>
-                        <div className="col-12">
+                        {/* <div className="col-12">
                             <span className="forgot-password">Quên mật khẩu tài khoản? </span>
-                        </div>
+                        </div> */}
 
                     </div>
                 </div>

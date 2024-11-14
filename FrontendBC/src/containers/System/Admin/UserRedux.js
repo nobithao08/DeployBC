@@ -208,19 +208,17 @@ class UserRedux extends Component {
         } = this.state;
 
         return (
-            <div className='user-redux-container'>
+            <div className='main-content user-redux-container'>
                 <div className='title'>
                     <FormattedMessage id="manage-user.title" />
                 </div>
                 <div className="user-redux-body" >
+                    <div className="all-user mb-3">
+                        <b><FormattedMessage id="manage-user.add" /></b>
+                    </div>
                     <div className="container">
                         <div className="row">
-                            <div className="col-12 my-3">
-                                <b><FormattedMessage id="manage-user.add" /></b>
-                            </div>
-
                             <div className="col-12">{isGetGenders === true ? 'Loading genders' : ''}</div>
-
                             <div className="col-3">
                                 <label><FormattedMessage id="manage-user.email" /> </label>
                                 <input className="form-control" type="email"
@@ -235,7 +233,6 @@ class UserRedux extends Component {
                                     value={password}
                                     onChange={(event) => { this.onChangeInput(event, 'password') }}
                                     disabled={this.state.action === CRUD_ACTIONS.EDIT ? true : false}
-
                                 />
                             </div>
                             <div className="col-3">
@@ -257,7 +254,6 @@ class UserRedux extends Component {
                                 <input className="form-control" type="text"
                                     value={phoneNumber}
                                     onChange={(event) => { this.onChangeInput(event, 'phoneNumber') }}
-
                                 />
                             </div>
                             <div className="col-9">
@@ -317,10 +313,8 @@ class UserRedux extends Component {
                                                 </option>
                                             );
                                         })}
-
                                 </select>
                             </div>
-
                             <div className="col-3">
                                 <label><FormattedMessage id="manage-user.image" /></label>
                                 <div className="preview-img-container">
@@ -335,6 +329,8 @@ class UserRedux extends Component {
                                     >
                                     </div>
                                 </div>
+
+
 
                             </div>
                             <div className="col-12 my-3">

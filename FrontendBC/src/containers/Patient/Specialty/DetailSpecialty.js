@@ -21,7 +21,6 @@ class DetailSpecialty extends Component {
         }
     }
 
-
     async componentDidMount() {
         if (this.props.match && this.props.match.params && this.props.match.params.id) {
             let id = this.props.match.params.id;
@@ -65,15 +64,12 @@ class DetailSpecialty extends Component {
         }
     }
 
-
-
     async componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.language !== prevProps.language) {
 
         }
 
     }
-
 
     handleOnChangeSelect = async (event) => {
         if (this.props.match && this.props.match.params && this.props.match.params.id) {
@@ -92,37 +88,33 @@ class DetailSpecialty extends Component {
                     let arr = data.doctorSpecialty;
                     if (arr && arr.length > 0) {
                         arr.map(item => {
-                            arrDoctorId.push(item.doctorId)
-                        })
+                            arrDoctorId.push(item.doctorId);
+                        });
                     }
                 }
 
                 this.setState({
                     dataDetailSpecialty: res.data,
                     arrDoctorId: arrDoctorId,
-                })
-
+                });
             }
         }
     }
 
     render() {
         let { arrDoctorId, dataDetailSpecialty, listProvince } = this.state;
-
         let { language } = this.props;
+
         return (
             <div className="detail-specialty-container">
                 <HomeHeader />
                 <div className="detail-specialty-body">
                     <div className="description-specialty">
-                        {dataDetailSpecialty && !_.isEmpty(dataDetailSpecialty)
-                            &&
-                            <div dangerouslySetInnerHTML={{ __html: dataDetailSpecialty.descriptionHTML }}>
-
-                            </div>
+                        {dataDetailSpecialty && !_.isEmpty(dataDetailSpecialty) &&
+                            <div dangerouslySetInnerHTML={{ __html: dataDetailSpecialty.descriptionHTML }}></div>
                         }
-
                     </div>
+
                     <div className="search-sp-doctor">
                         <select onChange={(event) => this.handleOnChangeSelect(event)}>
                             {listProvince && listProvince.length > 0 &&
@@ -130,49 +122,49 @@ class DetailSpecialty extends Component {
                                     return (
                                         <option key={index} value={item.keyMap}>
                                             {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
-                                        </option>)
+                                        </option>
+                                    );
                                 })
                             }
                         </select>
                     </div>
-                    {arrDoctorId && arrDoctorId.length > 0 &&
+
+                    {arrDoctorId && arrDoctorId.length > 0 ? (
                         arrDoctorId.map((item, index) => {
                             return (
                                 <div className="each-doctor" key={index}>
                                     <div className="dt-content-left">
                                         <div className="profile-doctor">
                                             <ProfileDoctor
+                                                key={item}
                                                 doctorId={item}
                                                 isShowDescriptionDoctor={true}
                                                 isShowLinkDetail={true}
                                                 isShowPrice={false}
-                                            //  dataTime={dataTime}
                                             />
                                         </div>
                                     </div>
                                     <div className="dt-content-right">
-                                        <div className="doctor-schdule">
-                                            <DoctorSchedule
-                                                doctorIdFromParent={item}
-                                            />
+                                        <div className="doctor-schedule">
+                                            <DoctorSchedule doctorIdFromParent={item} />
                                         </div>
-                                        <div className="doctor-extra-infor">
-                                            <DoctorExtraInfor
-                                                doctorIdFromParent={item}
-                                            />
+                                        <div className="doctor-extra-info">
+                                            <DoctorExtraInfor doctorIdFromParent={item} />
                                         </div>
                                     </div>
-
                                 </div>
-                            )
+                            );
                         })
-                    }
-
+                    ) : (
+                        <div className="no-doctors-message">
+                            <FormattedMessage id="specialty.no-doctors" defaultMessage="Không có bác sĩ nào ở tỉnh/thành phố này." />
+                        </div>
+                    )}
                 </div>
-
             </div>
         );
     }
+
 }
 
 const mapStateToProps = state => {

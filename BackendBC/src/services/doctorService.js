@@ -39,27 +39,26 @@ let getAllDoctors = () => {
     return new Promise(async (resolve, reject) => {
         try {
             let doctors = await db.User.findAll({
-                where: { roleId: 'R2' }, // Lọc những người dùng có roleId là 'R2' (bác sĩ)
+                where: { roleId: 'R2' },
                 attributes: {
-                    exclude: ['password'], // Loại bỏ mật khẩu khỏi kết quả trả về
+                    exclude: ['password'],
                 },
                 include: [
                     {
                         model: db.Allcode,
                         as: 'positionData',
-                        attributes: ['valueEn', 'valueVi'] // Bao gồm thông tin vị trí
+                        attributes: ['valueEn', 'valueVi']
                     },
                     {
                         model: db.Allcode,
                         as: 'genderData',
-                        attributes: ['valueEn', 'valueVi'] // Bao gồm thông tin giới tính
+                        attributes: ['valueEn', 'valueVi']
                     }
                 ],
                 raw: true,
                 nest: true
             });
 
-            // Nếu có danh sách bác sĩ, kiểm tra và chuyển đổi ảnh từ Base64
             if (doctors && doctors.length > 0) {
                 doctors = doctors.map(doctor => {
                     if (doctor.image) {
@@ -78,35 +77,6 @@ let getAllDoctors = () => {
         }
     });
 }
-
-
-// let saveDetailInforDoctor = (inputData) => {
-//     return new Promise(async (resolve, reject) => {
-//         resolve({
-//             errCode: 0,
-//             errMessage: 'ok'
-//         })
-//     })
-// }
-// let saveDetailInforDoctor = (inputData) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             // Không kiểm tra điều kiện inputData
-//             await db.Markdown.create({
-//                 contentHTML: inputData.contentHTML,
-//                 contentMarkdown: inputData.contentMarkdown,
-//                 description: inputData.description,
-//                 doctorId: inputData.doctorId
-//             });
-//             resolve({
-//                 errCode: 0,
-//                 errMessage: 'Save info doctor succeed!'
-//             });
-//         } catch (e) {
-//             reject(e);
-//         }
-//     });
-// };
 
 let checkRequiredFields = (inputData) => {
     let arrFields = ['doctorId', 'contentHTML', 'contentMarkdown', 'action',
@@ -199,8 +169,6 @@ let saveDetailInforDoctor = (inputData) => {
                         addressClinic: inputData.addressClinic,
                         specialtyId: inputData.specialtyId,
                         clinicId: inputData.clinicId,
-
-
                         note: inputData.note,
                     })
                 }
@@ -274,15 +242,6 @@ let getDetailDoctorById = (inputId) => {
         }
     })
 }
-
-// let bulkCreateSchedule = (data) => {
-//     return new Promise(async (resolve, reject) => {
-//         resolve({
-//             errCode: 0,
-//             errMessage: 'ok'
-//         })
-//     })
-// }
 
 let bulkCreateSchedule = (data) => {
     return new Promise(async (resolve, reject) => {
@@ -522,15 +481,6 @@ let getListPatientForDoctor = (doctorId, date) => {
     })
 }
 
-// let sendRemedy = (data) => {
-//     return new Promise(async (resolve, reject) => {
-//         resolve({
-//             errCode: 0,
-//             errMessage: 'ok'
-//         })
-//     })
-// }
-
 let sendRemedy = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -563,16 +513,12 @@ let sendRemedy = (data) => {
                     errCode: 0,
                     errMessage: 'ok'
                 })
-
-
             }
         } catch (e) {
             reject(e);
         }
     })
 }
-
-
 
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,

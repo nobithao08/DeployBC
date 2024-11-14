@@ -7,6 +7,8 @@ import Header from '../containers/Header/Header';
 
 import ManageDoctor from '../containers/System/Admin/ManageDoctor';
 import ManageAppointment from '../containers/System/Admin/ManageAppointment';
+import ManageChart from '../containers/System/Admin/ManageChart';
+import ManageChartDoctor from '../containers/System/Admin/ManageChartDoctor';
 
 import ManageSpecialty from '../containers/System/Specialty/ManageSpecialty';
 import ManageClinic from '../containers/System/Clinic/ManageClinic';
@@ -28,6 +30,11 @@ class System extends Component {
                             <Route path="/system/manage-specialty" component={ManageSpecialty} />
                             <Route path="/system/manage-clinic" component={ManageClinic} />
                             <Route path="/system/manage-handbook" component={ManageHandbook} />
+                            <Route path="/system/appointment-chart" component={ManageChart} />
+                            <Route path="/system/doctor-chart" component={ManageChartDoctor} />
+
+
+
 
                             <Route component={() => { return (<Redirect to={systemMenuPath} />) }} />
                         </Switch>

@@ -84,47 +84,47 @@ class ManageClinic extends Component {
     render() {
 
         return (
-            <div className="manage-clinic-container">
+            <div className="manage-clinic-container main-content">
                 <div className="ms-title"><FormattedMessage id="manage-clinic.title" /></div>
+                <div className='all'>
+                    <div className="add-new-clinic row">
+                        <div className="col-6 form-group">
+                            <label><FormattedMessage id="manage-clinic.name" /> </label>
 
-                <div className="add-new-clinic row">
-                    <div className="col-6 form-group">
-                        <label><FormattedMessage id="manage-clinic.name" /> </label>
+                            <input className="form-control" type="text" value={this.state.name}
+                                onChange={(event) => this.handleOnChangeInput(event, 'name')}
+                            />
 
-                        <input className="form-control" type="text" value={this.state.name}
-                            onChange={(event) => this.handleOnChangeInput(event, 'name')}
-                        />
+                        </div>
+                        <div className="col-5 form-group">
+                            <label><FormattedMessage id="manage-clinic.image" /></label>
 
-                    </div>
-                    <div className="col-6 form-group">
-                        <label><FormattedMessage id="manage-clinic.image" /></label>
+                            <input className="form-control-file" type="file"
+                                onChange={(event) => this.handleOnchangeImage(event)}
+                            />
+                        </div>
+                        <div className="col-6 form-group">
+                            <label><FormattedMessage id="manage-clinic.address" /></label>
 
-                        <input className="form-control-file" type="file"
-                            onChange={(event) => this.handleOnchangeImage(event)}
-                        />
-                    </div>
-                    <div className="col-6 form-group">
-                        <label><FormattedMessage id="manage-clinic.address" /></label>
-
-                        <input className="form-control" type="text" value={this.state.address}
-                            onChange={(event) => this.handleOnChangeInput(event, 'address')}
-                        />
-                    </div>
-                    <div className="col-12">
-                        <MdEditor
-                            style={{ height: '300px' }}
-                            renderHTML={text => mdParser.render(text)}
-                            onChange={this.handleEditorChange}
-                            value={this.state.descriptionMarkdown}
-                        />
-                    </div>
-                    <div className="col-12">
-                        <button className="btn-save-clinic"
-                            onClick={() => this.handleSaveNewClinic()}
-                        ><FormattedMessage id="manage-clinic.save" /></button>
+                            <input className="form-control" type="text" value={this.state.address}
+                                onChange={(event) => this.handleOnChangeInput(event, 'address')}
+                            />
+                        </div>
+                        <div className="col-12">
+                            <MdEditor
+                                style={{ height: '300px' }}
+                                renderHTML={text => mdParser.render(text)}
+                                onChange={this.handleEditorChange}
+                                value={this.state.descriptionMarkdown}
+                            />
+                        </div>
+                        <div className="col-12">
+                            <button className="btn-save-clinic"
+                                onClick={() => this.handleSaveNewClinic()}
+                            ><FormattedMessage id="manage-clinic.save" /></button>
+                        </div>
                     </div>
                 </div>
-
             </div>
         );
     }

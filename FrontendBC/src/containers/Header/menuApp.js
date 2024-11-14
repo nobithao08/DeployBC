@@ -1,4 +1,13 @@
 export const adminMenu = [
+    {
+        name: 'menu.admin.manage-home',
+        link: '/system/user-manage',
+        menus: [
+            { name: 'menu.admin.home', link: '/system/user-manage' }
+        ]
+    }
+    ,
+
     { //quản lý người dùng
         name: 'menu.admin.manage-user',
         menus: [
@@ -52,6 +61,20 @@ export const adminMenu = [
             {
                 name: 'menu.admin.manage-handbook', link: '/system/manage-handbook'
             },
+        ]
+    },
+
+    { //quản lý người dùng
+        name: 'menu.admin.chart',
+        menus: [
+            {
+                name: 'menu.admin.manage-chart', link: '/system/appointment-chart'
+            },
+
+            {
+                name: 'menu.admin.manage-chart-doctor', link: '/system/doctor-chart'
+            },
+
         ]
     },
 ];

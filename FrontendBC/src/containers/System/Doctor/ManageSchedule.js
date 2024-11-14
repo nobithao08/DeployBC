@@ -141,13 +141,13 @@ class ManageSchedule extends Component {
         let yesterday = new Date(new Date().setDate(new Date().getDate() - 1));
 
         return (
-            <div className="manage-schedule-container">
+            <div className="manage-schedule-container main-content">
                 <div className="m-s-title">
                     <FormattedMessage id="manage-schedule.title" />
                 </div>
                 <div className="container">
-                    <div className="row">
-                        <div className="col-6 form-group">
+                    <div className="row all">
+                        <div className="col-5 form-group">
                             <label> <FormattedMessage id="manage-schedule.choose-doctor" /></label>
                             <Select
                                 value={this.state.selectedDoctor}
@@ -155,7 +155,7 @@ class ManageSchedule extends Component {
                                 options={this.state.listDoctors}
                             />
                         </div>
-                        <div className="col-6 form-group">
+                        <div className="col-5 form-group">
                             <label><FormattedMessage id="manage-schedule.choose-date" /></label>
                             <DatePicker
                                 onChange={this.handleOnchangeDatePicker}

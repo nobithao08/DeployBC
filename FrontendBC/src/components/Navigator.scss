@@ -1,122 +1,185 @@
 @import "../styles/common.scss";
 
-.navigator-menu {
-    display: flex;
-    margin: 0;
-    padding: 0;
+// .navigator-menu {
+//     display: flex;
+//     margin: 0;
+//     padding: 0;
 
-    &.list-unstyled,
-    .list-unstyled {
-        list-style-type: none;
+//     &.list-unstyled,
+//     .list-unstyled {
+//         list-style-type: none;
+//     }
+
+//     .menu-group {
+//         &:hover {
+//             cursor: pointer;
+//             background-color: darken($colormain, 5);
+//         }
+
+//         .menu-group-name {
+//             line-height: 40px;
+//             padding: 0 15px;
+//             border-right: 1px solid $border;
+
+//             &:first-child {
+//                 border-left: 1px solid $border;
+//             }
+//         }
+
+//         .menu-list {
+//             display: none;
+//             background-color: $bg-menu-color;
+//             box-shadow: 2px 2px 4px 0 $box-shadow-color;
+//             -webkit-box-shadow: 2px 2px 4px 0 $box-shadow-color;
+//             color: $text-in-light;
+//             position: absolute;
+//             padding: 0;
+
+//             .menu {
+//                 width: 100%;
+//                 padding: 0 15px;
+//                 height: 35px;
+//                 line-height: 35px;
+//                 text-transform: none;
+
+//                 &.active {
+//                     a {
+//                         color: orange !important;
+//                     }
+
+//                     background-color: #ededed;
+//                 }
+
+//                 .menu-link {
+//                     text-decoration: none;
+//                     color: $text-in-light;
+//                 }
+
+//                 .sub-menu-list {
+//                     display: none;
+//                     background-color: $bg-menu-color;
+//                     box-shadow: 2px 2px 4px 0 $box-shadow-color;
+//                     -webkit-box-shadow: 2px 2px 4px 0 $box-shadow-color;
+//                     position: absolute;
+//                     top: 0;
+//                     left: 205px;
+//                     padding: 0;
+
+//                     .sub-menu {
+//                         padding: 0 15px;
+//                         height: 35px;
+//                         line-height: 35px;
+//                         white-space: nowrap;
+
+//                         &:hover {
+//                             background-color: darken($bg-menu-color, 5);
+//                         }
+
+//                         .sub-menu-link {
+//                             text-decoration: none;
+//                             color: $text-in-light;
+//                         }
+
+//                         a {
+//                             display: block;
+//                         }
+
+//                         &.active a {
+//                             font-weight: 500;
+//                             color: $colormain;
+//                         }
+//                     }
+//                 }
+
+//                 &.active span {
+//                     font-weight: 500;
+//                     color: orange;
+//                 }
+
+//                 &:hover {
+//                     background-color: darken($bg-menu-color, 3);
+
+//                     .sub-menu-list {
+//                         display: block;
+//                     }
+//                 }
+
+//                 .icon-right {
+//                     display: block;
+//                     position: absolute;
+//                     top: 0;
+//                     right: 10px;
+//                 }
+//             }
+//         }
+
+//         &:hover {
+//             .menu-list {
+//                 display: block;
+//             }
+//         }
+//     }
+// }
+
+.navigator-menu {
+    width: 250px; // Độ rộng thanh điều hướng
+    background-color: #2c3e50; // Màu nền thanh điều hướng
+    color: #ecf0f1; // Màu chữ trong thanh điều hướng
+    position: fixed; // Đặt thanh điều hướng cố định bên trái
+    top: 0;
+    bottom: 0; // Đảm bảo chiều cao của thanh điều hướng từ trên xuống dưới
+    left: 0;
+    z-index: 100;
+    
+    // Đảm bảo thanh điều hướng có thể cuộn khi nội dung vượt quá chiều cao
+    overflow-y: auto;  // Cho phép cuộn dọc nếu nội dung dài hơn chiều cao
+    height: 100vh;  // Thanh điều hướng chiếm toàn bộ chiều cao của cửa sổ
+
+    // Nhóm menu
+    .menu-group-name {
+        font-weight: bold;
+        font-size: 16px;
+        padding: 15px 20px;
+        text-transform: uppercase;
+        color: #bdc3c7; // Màu chữ nhạt hơn cho tiêu đề nhóm
     }
 
-    .menu-group {
-        &:hover {
-            cursor: pointer;
-            background-color: darken($colormain, 5);
-        }
-
-        .menu-group-name {
-            line-height: 40px;
-            padding: 0 15px;
-            border-right: 1px solid $border;
-
-            &:first-child {
-                border-left: 1px solid $border;
-            }
-        }
-
-        .menu-list {
-            display: none;
-            background-color: $bg-menu-color;
-            box-shadow: 2px 2px 4px 0 $box-shadow-color;
-            -webkit-box-shadow: 2px 2px 4px 0 $box-shadow-color;
-            color: $text-in-light;
-            position: absolute;
-            padding: 0;
-
-            .menu {
-                width: 100%;
-                padding: 0 15px;
-                height: 35px;
-                line-height: 35px;
-                text-transform: none;
-
-                &.active {
-                    a {
-                        color: orange !important;
-                    }
-
-                    background-color: #ededed;
-                }
-
-                .menu-link {
-                    text-decoration: none;
-                    color: $text-in-light;
-                }
-
-                .sub-menu-list {
-                    display: none;
-                    background-color: $bg-menu-color;
-                    box-shadow: 2px 2px 4px 0 $box-shadow-color;
-                    -webkit-box-shadow: 2px 2px 4px 0 $box-shadow-color;
-                    position: absolute;
-                    top: 0;
-                    left: 205px;
-                    padding: 0;
-
-                    .sub-menu {
-                        padding: 0 15px;
-                        height: 35px;
-                        line-height: 35px;
-                        white-space: nowrap;
-
-                        &:hover {
-                            background-color: darken($bg-menu-color, 5);
-                        }
-
-                        .sub-menu-link {
-                            text-decoration: none;
-                            color: $text-in-light;
-                        }
-
-                        a {
-                            display: block;
-                        }
-
-                        &.active a {
-                            font-weight: 500;
-                            color: $colormain;
-                        }
-                    }
-                }
-
-                &.active span {
-                    font-weight: 500;
-                    color: orange;
-                }
-
-                &:hover {
-                    background-color: darken($bg-menu-color, 3);
-
-                    .sub-menu-list {
-                        display: block;
-                    }
-                }
-
-                .icon-right {
-                    display: block;
-                    position: absolute;
-                    top: 0;
-                    right: 10px;
-                }
-            }
-        }
+    // Các mục menu chính
+    .menu-link, .sub-menu-link {
+        color: #ecf0f1;
+        padding: 12px 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        transition: background 0.3s;
+        border-left: 3px solid transparent; // Đường viền để đánh dấu menu nào đang được chọn
 
         &:hover {
-            .menu-list {
-                display: block;
-            }
+            background-color: #34495e; // Hiệu ứng khi di chuột
+            border-left-color: #3498db; // Đường viền màu xanh khi hover
         }
+
+        &.active {
+            background-color: #34495e; // Màu nền cho mục menu đang chọn
+            border-left-color: #3498db; // Đường viền màu xanh cho mục đang chọn
+            font-weight: bold; // In đậm chữ khi mục đang chọn
+            color: #ffffff; // Màu chữ có thể khác một chút để nổi bật hơn
+        }
+
+        .icon-right {
+            margin-left: auto;
+            font-size: 12px;
+        }
+    }
+
+    // Danh sách menu con
+    .sub-menu-list {
+        padding-left: 10px; // Căn lề cho menu con
+    }
+
+    .sub-menu-link {
+        font-size: 13px;
+        padding-left: 30px; // Lùi vào thêm cho menu con
     }
 }

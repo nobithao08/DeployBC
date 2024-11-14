@@ -65,7 +65,7 @@ class RemedyModal extends Component {
             // backdrop={true}
             >
                 <div className="modal-header">
-                    <h5 className="modal-title">Gửi hóa đơn khám bệnh thành công</h5>
+                    <h5 className="modal-title">Gửi hóa đơn khám bệnh</h5>
                     <button type="button" className="close" aria-label="Close" onClick={closeRemedyModal}>
                         <span aria-hidden="true">×</span>
                     </button>

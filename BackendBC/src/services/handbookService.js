@@ -52,63 +52,10 @@ let getAllHandbook = () => {
     })
 }
 
-// let getDetailHandbookById = (inputId, location) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             if (!inputId || !location) {
-//                 resolve({
-//                     errCode: 1,
-//                     errMessage: 'Missing parameter'
-//                 })
-//             }
-//             else {
-//                 let data = await db.Handbook.findOne({
-//                     where: {
-//                         id: inputId
-//                     },
-//                     attributes: ['descriptionHTML', 'descriptionMarkdown'],
-//                 })
-
-//                 // if (data) {
-//                 //     let doctorHandbook = [];
-//                 //     if (location === 'ALL') {
-//                 //         doctorHandbook = await db.Doctor_Infor.findAll({
-//                 //             where: { handbookId: inputId },
-//                 //             attributes: ['doctorId', 'provinceId'],
-//                 //         })
-//                 //     } else {
-//                 //         //find by location
-//                 //         doctorHandbook = await db.Doctor_Infor.findAll({
-//                 //             where: {
-//                 //                 handbookId: inputId,
-//                 //                 provinceId: location
-//                 //             },
-//                 //             attributes: ['doctorId', 'provinceId'],
-//                 //         })
-//                 //     }
-
-//                 //     data.doctorHandbook = doctorHandbook;
-
-//                 // } else data = {}
-
-//                 resolve({
-//                     errMessage: 'ok',
-//                     errCode: 0,
-//                     data
-//                 })
-
-
-//             }
-//         } catch (e) {
-//             reject(e);
-//         }
-//     })
-// }
-
 let getDetailHandbookById = (inputId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!inputId) {  // Chỉ kiểm tra inputId vì location không cần thiết cho yêu cầu này
+            if (!inputId) {
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing parameter'
@@ -118,7 +65,7 @@ let getDetailHandbookById = (inputId) => {
                     where: {
                         id: inputId
                     },
-                    attributes: ['name', 'image', 'descriptionMarkdown']  // Lấy trường name, image và markdown
+                    attributes: ['name', 'image', 'descriptionMarkdown']
                 });
 
                 if (!data) {
@@ -128,7 +75,7 @@ let getDetailHandbookById = (inputId) => {
                 resolve({
                     errMessage: 'ok',
                     errCode: 0,
-                    data: data  // Trả về dữ liệu handbook
+                    data: data
                 });
             }
         } catch (e) {

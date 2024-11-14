@@ -123,66 +123,67 @@ class ManagePatient extends Component {
                     spinner
                     text='Loading...'
                 >
-                    <div className="manage-patient-container">
+                    <div className="manage-patient-container main-content">
                         <div className="m-p-title">
                             <FormattedMessage id="manage-patient.title" />
                         </div>
-                        <div className="manage-patient-body row">
-                            <div className="col-4 form-group">
-                                <label><FormattedMessage id="manage-patient.choose-date" /></label>
-                                <DatePicker
-                                    onChange={this.handleOnchangeDatePicker}
-                                    className="form-control"
-                                    value={this.state.currentDate}
+                        <div className='all'>
+                            <div className="manage-patient-body row">
+                                <div className="col-4 form-group">
+                                    <label><FormattedMessage id="manage-patient.choose-date" /></label>
+                                    <DatePicker
+                                        onChange={this.handleOnchangeDatePicker}
+                                        className="form-control"
+                                        value={this.state.currentDate}
 
-                                />
-                            </div>
-                            <div className="col-12 table-manange-patient">
-                                <table style={{ width: '100%' }} >
-                                    <tbody>
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Thời gian</th>
-                                            <th>Họ và tên</th>
-                                            <th>Địa chỉ</th>
-                                            <th>Giới tính</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                        {dataPatient && dataPatient.length > 0 ?
-                                            dataPatient.map((item, index) => {
-                                                let time = language === LANGUAGES.VI ?
-                                                    item.timeTypeDataPatient.valueVi : item.timeTypeDataPatient.valueEn;
-                                                let gender = language === LANGUAGES.VI ?
-                                                    item.patientData.genderData.valueVi : item.patientData.genderData.valueEn
-                                                return (
-                                                    <tr key={index}>
-                                                        <td>{index + 1}</td>
-                                                        <td>{time}</td>
-                                                        <td>{item.patientData.firstName}</td>
-                                                        <td>{item.patientData.address}</td>
-                                                        <td>{gender}</td>
-                                                        <td>
-                                                            <button className="mp-btn-confirm"
-                                                                onClick={() => this.handleBtnConfirm(item)}>
-                                                                <FormattedMessage id="manage-patient.save" />
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
-
-                                            :
-
+                                    />
+                                </div>
+                                <div className="col-12 table-manange-patient">
+                                    <table style={{ width: '100%' }} >
+                                        <tbody>
                                             <tr>
-                                                <td colSpan="6" style={{ textAlign: "center" }}>no data</td>
+                                                <th>STT</th>
+                                                <th>Thời gian</th>
+                                                <th>Họ và tên</th>
+                                                <th>Địa chỉ</th>
+                                                <th>Giới tính</th>
+                                                <th>Actions</th>
                                             </tr>
-                                        }
+                                            {dataPatient && dataPatient.length > 0 ?
+                                                dataPatient.map((item, index) => {
+                                                    let time = language === LANGUAGES.VI ?
+                                                        item.timeTypeDataPatient.valueVi : item.timeTypeDataPatient.valueEn;
+                                                    let gender = language === LANGUAGES.VI ?
+                                                        item.patientData.genderData.valueVi : item.patientData.genderData.valueEn
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{time}</td>
+                                                            <td>{item.patientData.firstName}</td>
+                                                            <td>{item.patientData.address}</td>
+                                                            <td>{gender}</td>
+                                                            <td>
+                                                                <button className="mp-btn-confirm"
+                                                                    onClick={() => this.handleBtnConfirm(item)}>
+                                                                    <FormattedMessage id="manage-patient.save" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
 
-                                    </tbody>
-                                </table>
+                                                :
+
+                                                <tr>
+                                                    <td colSpan="6" style={{ textAlign: "center" }}>Không có dữ liệu</td>
+                                                </tr>
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-
                     </div>
                     <RemedyModal
                         isOpenModal={isOpenRemedyModal}

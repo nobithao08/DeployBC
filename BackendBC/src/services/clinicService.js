@@ -28,16 +28,6 @@ let createClinic = (data) => {
     })
 }
 
-// let createClinic = (data) => {
-//     return new Promise(async (resolve, reject) => {
-
-//         resolve({
-//             errCode: 0,
-//             errMessage: 'ok'
-//         })
-//     })
-// }
-
 let getAllClinic = () => {
     return new Promise(async (resolve, reject) => {
         try {

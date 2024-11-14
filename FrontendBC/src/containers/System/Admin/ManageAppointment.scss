@@ -1,14 +1,32 @@
 .admin-booking-management {
     padding: 20px;
 
+    .all {
+        gap: 20px;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+    .manage-appointment-title {
+        text-align: center;
+        margin: 20px 0;
+        font-size: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #333;
+    }
+
     h2 {
         margin-bottom: 20px;
         text-align: center;
     }
 
     .tab-container {
-        display: flex; // Sử dụng Flexbox
-        justify-content: center; // Căn giữa các phần tử
+        display: flex;
+        justify-content: center;
         margin-bottom: 20px;
 
         button {
@@ -65,10 +83,10 @@
             }
         }
         .btn-confirm {
-            background-color: #007bff; /* Màu xanh lá cho nút Xác Nhận */
+            background-color: #007bff;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 5px 8px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
@@ -78,15 +96,15 @@
             border-radius: 5px;
         
             &:hover {
-                background-color: #1059a7; /* Tối màu khi hover */
+                background-color: #1059a7;
             }
         }
         
         .btn-cancel {
-            background-color: #f44336; /* Màu đỏ cho nút Hủy */
+            background-color: #f44336;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 5px 8px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
@@ -96,9 +114,72 @@
             border-radius: 5px;
         
             &:hover {
-                background-color: #bd1e1b; /* Tối màu khi hover */
+                background-color: #bd1e1b;
             }
         }
         
+    }
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    box-sizing: border-box;
+}
+.table-container {
+    width: 100%;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th, td {
+        padding: 12px;
+ 
+        border-bottom: 1px solid #ddd;
+        font-size: 14px;
+    }
+
+    th {
+        background-color: #b1bcc2;
+        color: #333;
+        font-weight: 600;
+    }
+
+    td {
+        background-color: #ffffff;
+    }
+
+    tr:nth-child(even) td {
+        background-color: #ffffff;
+    }
+
+    tr:hover td {
+        background-color: #f1f1f3;
+    }
+
+    .mp-btn-confirm {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        font-size: 13px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .mp-btn-confirm:hover {
+        background-color: #0056b3;
+    }
+
+    td[colspan="6"] {
+        font-style: italic;
+        color: #999;
     }
 }

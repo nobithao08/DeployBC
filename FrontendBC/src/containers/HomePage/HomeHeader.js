@@ -6,6 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { LANGUAGES } from "../../utils";
 import { withRouter } from 'react-router';
 import { changeLanguageApp } from "../../store/actions";
+import { getAllSpecialty, searchSpecialty } from '../../services/userService';
 
 class HomeHeader extends Component {
     constructor(props) {
@@ -13,6 +14,8 @@ class HomeHeader extends Component {
         this.state = {
             searchTerm: '',
             specialties: [],
+            filteredSpecialties: [],
+            isLoading: false
         };
     }
 
@@ -20,20 +23,30 @@ class HomeHeader extends Component {
         this.fetchSpecialties();
     }
 
-    fetchSpecialties = () => {
-        const exampleSpecialties = [
-            'Cơ Xương Khớp',
-            'Thần kinh',
-            'Tiêu hoá',
-            'Da liễu',
-            'Chuyên khoa Mắt',
-            'Tim mạch',
-            'Tai Mũi Họng',
-            'Sức khỏe tâm thần',
-            'Thận - Tiết niệu'
-        ];
-        this.setState({ specialties: exampleSpecialties });
-    }
+    fetchSpecialties = async () => {
+        // console.log("Bắt đầu fetching specialties...");
+        try {
+            const response = await getAllSpecialty();
+
+            if (response && response.status === 200) {
+                console.log("Dữ liệu từ API:", response.data);
+                if (Array.isArray(response.data)) {
+                    this.setState({
+                        specialties: response.data,
+                        filteredSpecialties: response.data
+                    });
+                    console.log("Cập nhật specialties trong state.");
+                } else {
+                    console.warn("Dữ liệu không phải là mảng:", response.data);
+                    this.setState({ specialties: [], filteredSpecialties: [] });
+                }
+            } else {
+                console.error("Mã trạng thái không hợp lệ:", response.status);
+            }
+        } catch (error) {
+            console.error("Lỗi khi fetching specialties:", error);
+        }
+    };
 
     changeLanguage = (language) => {
         this.props.changeLanguageAppRedux(language);
@@ -69,16 +82,42 @@ class HomeHeader extends Component {
         }
     }
 
-    handleSearchChange = (event) => {
-        this.setState({ searchTerm: event.target.value });
-    }
+    handleSearchChange = async (event) => {
+        const { value } = event.target;
+        // console.log("Giá trị tìm kiếm:", value);
+        this.setState({ searchTerm: value, isLoading: true });
+
+        if (value) {
+            try {
+                const response = await searchSpecialty(value);
+                // console.log("Kết quả từ API:", response.data);
+
+                if (response.data && Array.isArray(response.data)) {
+                    // Cập nhật filteredSpecialties với dữ liệu tìm kiếm
+                    this.setState({ filteredSpecialties: response.data });
+                } else {
+                    console.error("Không có chuyên khoa nào trong dữ liệu trả về.");
+                    this.setState({ filteredSpecialties: [] });
+                }
+            } catch (error) {
+                console.error("Lỗi khi gọi API:", error);
+            } finally {
+                this.setState({ isLoading: false });
+            }
+        } else {
+            this.setState({ filteredSpecialties: this.state.specialties, isLoading: false });
+        }
+    };
+
+    handleSpecialtyClick = (specialtyId) => {
+        if (this.props.history) {
+            this.props.history.push(`/detail-specialty/${specialtyId}`);
+        }
+    };
 
     render() {
-        const { searchTerm, specialties } = this.state;
-        const filteredSpecialties = specialties.filter(specialty =>
-            specialty.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-
+        const { searchTerm, specialties, filteredSpecialties, isLoading } = this.state;
+        const displaySpecialties = searchTerm ? filteredSpecialties : specialties;
         let language = this.props.language;
         return (
             <React.Fragment>
@@ -146,19 +185,29 @@ class HomeHeader extends Component {
                                         />
                                     )}
                                 </FormattedMessage>
+                                {isLoading && <div className="loading">Loading...</div>}
                                 {searchTerm && (
                                     <div className="search-results">
-                                        {filteredSpecialties.length > 0 ? (
-                                            filteredSpecialties.map((specialty, index) => (
-                                                <div key={index} className="search-result-item">
-                                                    {specialty}
+                                        {displaySpecialties && displaySpecialties.length > 0 ? (
+                                            displaySpecialties.map((specialty) => (
+                                                <div
+                                                    key={specialty.id}
+                                                    className="search-result-item"
+                                                    onClick={() => this.handleSpecialtyClick(specialty.id)}
+                                                >
+                                                    {specialty.name}
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="no-results">Không tìm thấy chuyên khoa nào.</div>
+                                            <div className="no-results">
+                                                <FormattedMessage id="banner.noResults" />
+                                            </div>
                                         )}
                                     </div>
                                 )}
+
+
+
                             </div>
                         </div>
                         <div className="content-down">

@@ -80,38 +80,38 @@ class ManageSpecialty extends Component {
     render() {
 
         return (
-            <div className="manage-specialty-container">
+            <div className="manage-specialty-container main-content">
                 <div className="ms-title"><FormattedMessage id="manage-specialty.title" /></div>
+                <div className='all'>
+                    <div className="add-new-specialty row">
+                        <div className="col-6 form-group">
+                            <label><FormattedMessage id="manage-specialty.name" /> </label>
+                            <input className="form-control" type="text" value={this.state.name}
+                                onChange={(event) => this.handleOnChangeInput(event, 'name')}
+                            />
 
-                <div className="add-new-specialty row">
-                    <div className="col-6 form-group">
-                        <label><FormattedMessage id="manage-specialty.name" /> </label>
-                        <input className="form-control" type="text" value={this.state.name}
-                            onChange={(event) => this.handleOnChangeInput(event, 'name')}
-                        />
-
-                    </div>
-                    <div className="col-6 form-group">
-                        <label><FormattedMessage id="manage-specialty.image" /></label>
-                        <input className="form-control-file" type="file"
-                            onChange={(event) => this.handleOnchangeImage(event)}
-                        />
-                    </div>
-                    <div className="col-12">
-                        <MdEditor
-                            style={{ height: '300px' }}
-                            renderHTML={text => mdParser.render(text)}
-                            onChange={this.handleEditorChange}
-                            value={this.state.descriptionMarkdown}
-                        />
-                    </div>
-                    <div className="col-12">
-                        <button className="btn-save-specialty"
-                            onClick={() => this.handleSaveNewSpecialty()}
-                        ><FormattedMessage id="manage-specialty.save" /></button>
+                        </div>
+                        <div className="col-6 form-group">
+                            <label><FormattedMessage id="manage-specialty.image" /></label>
+                            <input className="form-control-file" type="file"
+                                onChange={(event) => this.handleOnchangeImage(event)}
+                            />
+                        </div>
+                        <div className="col-12">
+                            <MdEditor
+                                style={{ height: '300px' }}
+                                renderHTML={text => mdParser.render(text)}
+                                onChange={this.handleEditorChange}
+                                value={this.state.descriptionMarkdown}
+                            />
+                        </div>
+                        <div className="col-12">
+                            <button className="btn-save-specialty"
+                                onClick={() => this.handleSaveNewSpecialty()}
+                            ><FormattedMessage id="manage-specialty.save" /></button>
+                        </div>
                     </div>
                 </div>
-
             </div>
         );
     }

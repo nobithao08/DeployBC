@@ -9,16 +9,6 @@ let buildUrlEmail = (doctorId, token) => {
     return result;
 }
 
-// let postBookAppointment = (data) => {
-//     return new Promise(async (resolve, reject) => {
-//         resolve({
-//             errCode: 0,
-//             errMessage: 'ok'
-//         })
-//     })
-// }
-
-
 let postBookAppointment = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -70,7 +60,6 @@ let postBookAppointment = (data) => {
                         }
                     });
 
-                    // Logic để xóa thời gian đã đặt
                     await db.Schedule.destroy({
                         where: {
                             doctorId: data.doctorId,
@@ -89,55 +78,6 @@ let postBookAppointment = (data) => {
         }
     });
 }
-
-
-// let postVerifyBookAppointment = (data) => {
-//     return new Promise(async (resolve, reject) => {
-//         resolve({
-//             errCode: 0,
-//             errMessage: 'ok'
-//         })
-//     })
-// }
-
-// let postVerifyBookAppointment = (data) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             if (!data.token || !data.doctorId) {
-//                 resolve({
-//                     errCode: 1,
-//                     errMessage: 'Missing parameter'
-//                 })
-//             } else {
-//                 let appointment = await db.Booking.findOne({
-//                     where: {
-//                         doctorId: data.doctorId,
-//                         token: data.token,
-//                         statusId: 'S1'
-//                     },
-//                     raw: false
-//                 })
-//                 if (appointment) {
-//                     appointment.statusId = 'S2';
-//                     await appointment.save();
-
-//                     resolve({
-//                         errCode: 0,
-//                         errMessage: "Update the appointment succed!"
-//                     })
-//                 }
-//                 else {
-//                     resolve({
-//                         errCode: 2,
-//                         errMessage: "Appointment has been activated or dose not exist"
-//                     })
-//                 }
-//             }
-//         } catch (e) {
-//             reject(e);
-//         }
-//     })
-// }
 
 let postVerifyBookAppointment = async (data) => {
     return new Promise(async (resolve, reject) => {
@@ -206,9 +146,6 @@ let postVerifyBookAppointment = async (data) => {
     });
 };
 
-
-
-
 let getAllBookings = async () => {
     try {
         let bookings = await db.Booking.findAll({
@@ -228,7 +165,7 @@ let getAllBookings = async () => {
             nest: true
         });
 
-        // console.log('Bookings fetched:', JSON.stringify(bookings, null, 2)); // In ra thông tin booking chi tiết
+        // console.log('Bookings fetched:', JSON.stringify(bookings, null, 2));
 
         return {
             errCode: 0,
@@ -242,11 +179,6 @@ let getAllBookings = async () => {
         };
     }
 };
-
-
-
-
-
 
 module.exports = {
     postBookAppointment: postBookAppointment,

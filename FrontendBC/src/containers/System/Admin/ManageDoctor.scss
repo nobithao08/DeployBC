@@ -1,53 +1,71 @@
-
 .manage-doctor-container {
-    padding: 5px;
+    padding: 20px;
     max-width: 100%;
     overflow-x: hidden;
     box-sizing: border-box;
+    background-color: #f4f7fc;
 
     .manage-doctor-title {
         text-align: center;
-        margin: 15px 0;
+        margin: 20px 0;
         font-size: 20px;
-        text-transform: uppercase;
         font-weight: 600;
+        text-transform: uppercase;
+        color: #333;
     }
 
-    .save-content-doctor {
+    .all {
+        gap: 20px;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+    .save-content-doctor,
+    .create-content-doctor {
         margin-top: 20px;
         margin-bottom: 30px;
-        border-radius: 3px;
+        border-radius: 5px;
         outline: none;
         border: none;
-        padding: 5px;
-        background: orange;
+        padding: 10px 20px;
         cursor: pointer;
+        font-weight: 600;
+        width: 100%;
 
         &:hover {
             opacity: 0.9;
         }
     }
 
-    .create-content-doctor {
-        margin-top: 20px;
-        margin-bottom: 30px;
-        border-radius: 3px;
-        outline: none;
-        border: none;
-        padding: 5px;
-        background: rgb(11, 93, 216);
-        cursor: pointer;
+    .save-content-doctor {
+        background: #f39c12;
         color: white;
-
         &:hover {
-            opacity: 0.9;
+            background-color: #e67e22;
+        }
+    }
+
+    .create-content-doctor {
+        background: #3498db;
+        color: white;
+        &:hover {
+            background-color: #2980b9;
         }
     }
 
     .more-infor {
         display: flex;
-        gap: 15px;
-        padding-bottom: 15px;
+        gap: 20px;
+
+        .content-left,
+        .content-right {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
         .content-left {
             width: 35%;
@@ -57,4 +75,12 @@
             width: 65%;
         }
     }
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    box-sizing: border-box;
+    background-color: #f4f7fc;
 }

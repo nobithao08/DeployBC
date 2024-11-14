@@ -1,7 +1,7 @@
 {
     "homeheader": {
         "speciality": "Medical specialty",
-        "searchdoctor": "Find a doctor by specialty",
+        "searchdoctor": "Find a medical specialist",
         "health-facility": "Health facilities",
         "select-room": "Choose hospital clinic",
         "doctor": "Doctor",
@@ -19,14 +19,19 @@
         "child3": "General examination",
         "child4": "Medical test",
         "child5": "Mental health",
-        "child6": "Dental examination"
+        "child6": "Dental examination",
+        "noResults": "No specialties found."
     },
     "menu": {
         "admin": {
+            "manage-home": "Dashboard",
+            "home": "Home",
             "manage-user": "Users System",
             "manage-doctor": "Manage doctors",
             "manage-admin": "Manage admins",
-            "manage-appointment": "Manage appointment",
+            "manage-appointment": "Manage appointments",
+            "manage-chart": "Manage appointment statistics",
+            "manage-chart-doctor": "Manage doctor appointment statistics",
             "crud": "CRUD user",
             "crud-redux": "Manage users",
             "clinic": "Clinics",
@@ -34,6 +39,7 @@
             "specialty": "Specialties",
             "manage-specialty": "Manage specialties",
             "handbook": "Handbook",
+            "chart": "Statistics",
             "manage-handbook": "Manage handbook"
         },
         "doctor": {
@@ -43,7 +49,7 @@
     },
     "manage-user": {
         "title": "Manage users",
-        "add": "Add a new user",
+        "add": "User information",
         "all": "All users",
         "email": "Email",
         "password": "Password",
@@ -125,6 +131,14 @@
         "confirm": "Confirm",
         "cancel": "Cancel"
     },
+    "manage-statistics": {
+        "title": "Manage appointment statistics",
+        "new": "Lịch hẹn mới",
+        "confirmed": "Đã xác nhận",
+        "completed": "Đã khám xong",
+        "canceled": "Đã hủy",
+        "patientName": "Tên bệnh nhân"
+    },
     "patient": {
         "detail-doctor": {
             "schedule": "Schedule",
@@ -157,7 +171,7 @@
     },
     "admin": {
         "manage-doctor": {
-            "title": "Create more information doctors",
+            "title": "Doctor information management",
             "select-doctor": "Select doctor",
             "intro": "Introduction:",
             "add": "Create infor",
