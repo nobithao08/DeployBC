@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import Slider from "react-slick";
-import { getAllDoctors } from '../../../services/userService';
+import { getAllDoctors, getDoctorStatsByMonth } from '../../../services/userService';
 import * as actions from '../../../store/actions';
 import { LANGUAGES } from '../../../utils';
 import { withRouter } from 'react-router';
@@ -10,10 +10,11 @@ import { Buffer } from 'buffer';
 
 class OutStandingDoctor extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             arrDoctors: [],
-            dataDoctors: []
+            dataDoctors: [],
+            doctorStats: {},
         }
     }
 
@@ -31,8 +32,38 @@ class OutStandingDoctor extends Component {
         if (res && res.errCode === 0) {
             this.setState({
                 dataDoctors: res.data ? res.data : []
-            })
+            });
         }
+
+        const doctorStats = {};
+        for (let doctor of this.state.dataDoctors) {
+            let stats = await getDoctorStatsByMonth(doctor.id);
+
+            if (stats && Array.isArray(stats)) {
+                const totalAppointments = stats
+                    .filter(item => item["doctorInfo.id"] === doctor.id)
+                    .reduce((sum, item) => {
+                        const count = parseInt(item.completed, 10);
+                        return sum + (!isNaN(count) ? count : 0);
+                    }, 0);
+                console.log(`Dữ liệu lịch hẹn của bác sĩ`, totalAppointments);
+
+                doctorStats[doctor.id] = totalAppointments;
+            } else {
+                doctorStats[doctor.id] = 0;
+            }
+        }
+
+        console.log("Tổng số lượng lịch hẹn của từng bác sĩ: ", doctorStats);
+
+        const sortedDoctorStats = Object.entries(doctorStats)
+            .sort((a, b) => b[1] - a[1])
+            .map(entry => entry[0]);
+
+        this.setState({
+            doctorStats,
+            sortedDoctorStats,
+        });
     }
 
     handleViewDetailDoctor = (doctor) => {
@@ -50,8 +81,7 @@ class OutStandingDoctor extends Component {
     render() {
         let arrDoctors = this.state.arrDoctors;
         let { language } = this.props;
-        let { dataDoctors } = this.state;
-        // arrDoctors = arrDoctors.concat(arrDoctors).concat(arrDoctors)
+        let { doctorStats, sortedDoctorStats } = this.state;
 
         return (
             <div className="section-share section-outstanding-doctor">
@@ -66,16 +96,22 @@ class OutStandingDoctor extends Component {
                     </div>
                     <div className="section-body">
                         <Slider {...this.props.settings}>
-                            {arrDoctors && arrDoctors.length > 0
-                                && arrDoctors.map((item, index) => {
+                            {sortedDoctorStats && sortedDoctorStats.length > 0
+                                && sortedDoctorStats.map((doctorId, index) => {
+                                    const doctor = arrDoctors.find(item => item.id === parseInt(doctorId));
+                                    if (!doctor) return null;
+
                                     let imageBase64 = '';
-                                    if (item.image) {
-                                        imageBase64 = Buffer.from(item.image, 'base64').toString('binary');
+                                    if (doctor.image) {
+                                        imageBase64 = Buffer.from(doctor.image, 'base64').toString('binary');
                                     }
-                                    let nameVi = `${item.positionData.valueVi}, ${item.lastName} ${item.firstName} `;
-                                    let nameEn = `${item.positionData.valueEn}, ${item.firstName} ${item.lastName}`;
+
+                                    let nameVi = `${doctor.positionData.valueVi}, ${doctor.lastName} ${doctor.firstName}`;
+                                    let nameEn = `${doctor.positionData.valueEn}, ${doctor.firstName} ${doctor.lastName}`;
+                                    let appointmentCount = doctorStats[doctor.id] || 0;
+
                                     return (
-                                        <div className="section-customize" key={index} onClick={() => this.handleViewDetailDoctor(item)}>
+                                        <div className="section-customize" key={index} onClick={() => this.handleViewDetailDoctor(doctor)}>
                                             <div className="customize-border">
                                                 <div className="outer-bg">
                                                     <div className="bg-image section-outstading-doctor"
@@ -84,6 +120,9 @@ class OutStandingDoctor extends Component {
                                                 </div>
                                                 <div className="position text-center">
                                                     <div>{language === LANGUAGES.VI ? nameVi : nameEn}</div>
+                                                    <div className="appointment-count" style={{ color: '#ff8c00' }}>
+                                                        {`Lượt khám: ${appointmentCount}`}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -96,8 +135,8 @@ class OutStandingDoctor extends Component {
             </div>
         );
     }
-
 }
+
 
 const mapStateToProps = state => {
     return {

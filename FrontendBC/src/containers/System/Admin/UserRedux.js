@@ -218,7 +218,7 @@ class UserRedux extends Component {
                     </div>
                     <div className="container">
                         <div className="row">
-                            <div className="col-12">{isGetGenders === true ? 'Loading genders' : ''}</div>
+                            <div className="col-12">{isGetGenders === true ? 'Đang tải, vui lòng chờ' : ''}</div>
                             <div className="col-3">
                                 <label><FormattedMessage id="manage-user.email" /> </label>
                                 <input className="form-control" type="email"

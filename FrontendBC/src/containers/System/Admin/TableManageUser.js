@@ -104,7 +104,8 @@ class TableManageUser extends Component {
                             })
                         ) : (
                             <tr>
-                                <td colSpan="5">No users found</td>
+                                <td colSpan="5" style={{ textAlign: 'center', verticalAlign: 'middle' }}>Không tìm thấy người dùng</td>
+
                             </tr>
                         )}
                     </tbody>

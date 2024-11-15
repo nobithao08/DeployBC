@@ -108,49 +108,54 @@ const ManageChartDoctor = () => {
                         height={350}
                     />
                 ) : (
-                    <p>Loading...</p>
+                    <p>Đang tải...</p>
                 )}
 
                 {/* Hiển thị bảng dữ liệu */}
                 {currentItems.length > 0 ? (
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Tháng</th>
-                                <th>Tên bác sĩ</th>
-                                <th>Số lịch hẹn hoàn thành</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentItems.map((row, index) => (
-                                <tr key={index}>
-                                    <td>Tháng {row.month}</td>
-                                    <td>{row.doctorName}</td>
-                                    <td>{row.completed}</td>
+                    <div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tháng</th>
+                                    <th>Tên bác sĩ</th>
+                                    <th>Số lịch hẹn hoàn thành</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {currentItems.map((row, index) => (
+                                    <tr key={index}>
+                                        <td>Tháng {row.month}</td>
+                                        <td>{row.doctorName}</td>
+                                        <td>{row.completed}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div className="pagination">
+                            <button
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                            >
+                                &laquo; Trước
+                            </button>
+                            <span>{`Trang ${currentPage} / ${totalPages}`}</span>
+                            <button
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                            >
+                                Tiếp &raquo;
+                            </button>
+                        </div>
+                    </div>
+
                 ) : (
-                    <p>Không có lịch hẹn của bác sĩ cho tháng đã chọn.</p>
+                    <div class="loading-container main-content">
+                        <div class="loading-spinner"></div>
+                        <p class="loading-text">Đang tải, vui lòng chờ...</p>
+                    </div>
                 )}
 
-                {/* Phân trang */}
-                <div className="pagination">
-                    <button
-                        onClick={() => setCurrentPage(currentPage - 1)}
-                        disabled={currentPage === 1}
-                    >
-                        &laquo; Trước
-                    </button>
-                    <span>{`Trang ${currentPage} / ${totalPages}`}</span>
-                    <button
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                    >
-                        Tiếp &raquo;
-                    </button>
-                </div>
             </div>
         </div>
     );

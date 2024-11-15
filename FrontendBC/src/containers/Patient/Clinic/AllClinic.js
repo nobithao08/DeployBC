@@ -48,7 +48,10 @@ class AllClinic extends Component {
                                 </div>
                             ))
                         ) : (
-                            <p>Không có cơ sở y tế nào.</p>
+                            <div class="loading-container">
+                                <div class="loading-spinner"></div>
+                                <p class="loading-text">Đang tải, vui lòng chờ...</p>
+                            </div>
                         )}
                     </div>
                 </div>

@@ -42,6 +42,14 @@
                 color: #333;
                 text-align: center;
             }
+
+            .appointment-count {
+                margin-top: 8px;
+                font-size: 14px;
+                color: #ff8c00;
+                font-weight: 600;
+                text-align: center;
+            }
         }
     }
 
@@ -49,4 +57,18 @@
         text-align: center;
         color: #777;
     }
+}
+.sort-container {
+    margin-bottom: 20px;
+    text-align: right;
+    margin-right: 20px;
+}
+
+.sort-select {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    cursor: pointer;
 }

@@ -197,7 +197,7 @@ class HomeHeader extends Component {
                                         />
                                     )}
                                 </FormattedMessage>
-                                {isLoading && <div className="loading">Loading...</div>}
+                                {isLoading && <div className="loading">Đang tìm...</div>}
                                 {searchTerm && (
                                     <div className="search-results">
                                         {displaySpecialties && displaySpecialties.length > 0 ? (
