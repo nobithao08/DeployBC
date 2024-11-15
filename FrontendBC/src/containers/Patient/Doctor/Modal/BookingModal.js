@@ -233,7 +233,19 @@ class BookingModal extends Component {
         }
     }
 
-
+    handleClearInfo = () => {
+        this.setState({
+            fullName: '',
+            phonenumber: '',
+            email: '',
+            address: '',
+            reason: '',
+            birthday: '',
+            selectedGender: '',
+            doctorId: '',
+            timeType: ''
+        });
+    }
 
     render() {
         let { isOpenModal, closeBookingClose, dataTime } = this.props;
@@ -344,6 +356,12 @@ class BookingModal extends Component {
                                  */}
                                 Bạn đã từng đặt lịch ở hệ thống, điền thông tin nhanh
                             </button>
+                            <button
+                                className="btn-clear-info"
+                                onClick={this.handleClearInfo}
+                            >
+                                | Xóa thông tin
+                            </button>
                         </div>
                         <div className="booking-modal-footer">
                             <button className="btn-booking-confirm"
@@ -356,6 +374,7 @@ class BookingModal extends Component {
                             >
                                 <FormattedMessage id="patient.booking-modal.btnCancel" />
                             </button>
+
                         </div>
                     </div>
                 </Modal>

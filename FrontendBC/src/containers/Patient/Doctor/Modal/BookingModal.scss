@@ -56,10 +56,18 @@
 
             .btn-booking-confirm {
                 background-color: orange;
+                color: white;
+                &:hover {
+                    background-color: #d16f13;
+                }
             }
 
             .btn-booking-cancel {
-                background-color: grey;
+                background-color: #f44336;
+                color: white;
+                &:hover {
+                    background-color: #b92d2b;
+                }
             }
         }
     }
@@ -69,5 +77,16 @@
     .btn-email {
         font-size: 14px;
         font-weight: bold;
+        &:hover {
+            color: #240da7;
+        }
     }
+    .btn-clear-info {
+        font-size: 14px;
+        font-weight: bold;
+        &:hover {
+            color: #d41900;
+        }
+    }  
 }
+
