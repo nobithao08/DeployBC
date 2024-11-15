@@ -82,6 +82,12 @@ class HomeHeader extends Component {
         }
     }
 
+    handleViewBooking = () => {
+        if (this.props.history) {
+            this.props.history.push('/all-bookings');
+        }
+    }
+
     handleSearchChange = async (event) => {
         const { value } = event.target;
         // console.log("Giá trị tìm kiếm:", value);
@@ -153,6 +159,12 @@ class HomeHeader extends Component {
                         </div>
 
                         <div className='right-content'>
+                            <div className="booking" onClick={this.handleViewBooking}>
+                                {/* <div><b><FormattedMessage id="homeheader.handbook" /></b></div>
+                                 */}
+
+                                <div className='booking-text'> <i className="fas fa-clock"></i> Lịch hẹn</div>
+                            </div>
                             <div className="support">
                                 <a href="https://www.facebook.com/profile.php?id=61566821611802" target="_blank" rel="noopener noreferrer">
                                     <i className="fas fa-question-circle"></i>

@@ -24,6 +24,7 @@ import AllSpecialty from './Patient/Specialty/AllSpecialty.js';
 import AllDoctor from './Patient/Doctor/AllDoctors.js';
 import BookingSuccess from './Patient/Doctor/Modal/BookingSuccess.js'
 // import BookingModal from './Patient/Doctor/Modal/BookingModal.js';
+import AllBookings from './Patient/Booking/AllBookings.js';
 
 class App extends Component {
 
@@ -70,6 +71,8 @@ class App extends Component {
                                     <Route path="/booking-success" component={BookingSuccess} />
                                     {/* <Route path="/" component={BookingModal} /> */}
                                     <Route path={path.VERIFY_EMAIL_BOOKING} component={VerifyEmail} />
+                                    <Route path={path.ALL_BOOKINGS} component={AllBookings} />
+
                                 </Switch>
                             </CustomScrollbars>
                         </div>

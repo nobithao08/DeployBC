@@ -338,11 +338,13 @@ class BookingModal extends Component {
 
                             </div>
                         </div>
-                        <button className="button-email" onClick={this.toggleEmailModal}>
-                            {/* <FormattedMessage id="patient.booking-modal.enterEmail" />
+                        <div className="btn-text">
+                            <button className="btn-email" onClick={this.toggleEmailModal}>
+                                {/* <FormattedMessage id="patient.booking-modal.enterEmail" />
                                  */}
-                            Bạn đã từng đặt lịch ở hệ thống, điền thông tin nhanh
-                        </button>
+                                Bạn đã từng đặt lịch ở hệ thống, điền thông tin nhanh
+                            </button>
+                        </div>
                         <div className="booking-modal-footer">
                             <button className="btn-booking-confirm"
                                 onClick={() => this.handleConfirmBooking()}
