@@ -23,8 +23,11 @@
     }
 
     .btn-schedule {
+        &:hover {
+            background-color: #e1f1ee;
+        }
         &.active {
-            background-color: orange;
+            background-color: #18be95;
         }
     }
 

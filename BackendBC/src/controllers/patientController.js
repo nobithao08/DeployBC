@@ -45,9 +45,32 @@ let getAllBookings = async (req, res) => {
     }
 };
 
+let handleGetUserByEmail = async (req, res) => {
+    try {
+        let email = req.query.email;
+
+        if (!email) {
+            return res.status(400).json({
+                errCode: 1,
+                message: 'Missing required parameter: email'
+            });
+        }
+
+        let response = await patientService.getUserByEmail(email);
+        return res.status(200).json(response);
+
+    } catch (error) {
+        console.error('Error in controller:', error);
+        return res.status(500).json({
+            errCode: -1,
+            message: 'Error from server'
+        });
+    }
+};
 
 module.exports = {
     postBookAppointment: postBookAppointment,
     postVerifyBookAppointment: postVerifyBookAppointment,
-    getAllBookings: getAllBookings
+    getAllBookings: getAllBookings,
+    handleGetUserByEmail: handleGetUserByEmail
 }

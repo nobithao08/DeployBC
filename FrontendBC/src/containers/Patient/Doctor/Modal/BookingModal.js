@@ -9,7 +9,7 @@ import DatePicker from '../../../../components/Input/DatePicker';
 import * as actions from '../../../../store/actions';
 import { LANGUAGES } from '../../../../utils';
 import Select from 'react-select';
-import { postPatientBookAppointment } from '../../../../services/userService';
+import { getUserByEmail, postPatientBookAppointment } from '../../../../services/userService';
 import { toast } from "react-toastify";
 import moment from 'moment';
 import LoadingOverlay from 'react-loading-overlay';
@@ -30,7 +30,10 @@ class BookingModal extends Component {
             doctorId: '',
             genders: '',
             timeType: '',
-            isShowLoading: false
+            isShowLoading: false,
+
+            isEmailModalOpen: false,  // Trạng thái của modal phụ
+            tempEmail: ''             // Email tạm lưu khi nhập trong modal phụ
         }
     }
 
@@ -181,6 +184,56 @@ class BookingModal extends Component {
         }
 
     }
+    toggleEmailModal = () => {
+        this.setState({ isEmailModalOpen: !this.state.isEmailModalOpen });
+    }
+
+    handleEmailChange = (event) => {
+        this.setState({ tempEmail: event.target.value });
+    }
+
+    handleConfirmEmail = async () => {
+        if (!this.state.tempEmail) {
+            toast.error("Vui lòng nhập email.");
+            return;
+        }
+
+        try {
+            let res = await getUserByEmail(this.state.tempEmail);
+
+            if (res) {
+                if (res && res.data) {
+                    let userData = res.data;
+                    // console.log('User Data:', userData);
+                    this.setState({
+                        fullName: userData.firstName || '',
+                        phonenumber: userData.phonenumber || '',
+                        email: this.state.tempEmail || userData.email,
+                        address: userData.address || '',
+                        reason: userData.patientData && userData.patientData[0]?.reason || '',
+                        birthday: userData.patientData && userData.patientData[0]?.birthDate ? new Date(userData.patientData[0].birthDate) : '',
+                        selectedGender: this.state.genders.find(gender => gender.value === userData.gender) || '',
+                        isEmailModalOpen: false
+                    }, () => {
+                        console.log('firstName:', userData.firstName);
+
+                        console.log('Updated state:', this.state);
+                    });
+
+                } else {
+                    toast.error("Không tìm thấy thông tin người dùng với email này.");
+                }
+            } else {
+                console.log("API Response không có dữ liệu hợp lệ.");
+                toast.error("Không có dữ liệu từ API.");
+            }
+        } catch (error) {
+            console.error("Lỗi khi lấy thông tin người dùng:", error);
+            toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+        }
+    }
+
+
 
     render() {
         let { isOpenModal, closeBookingClose, dataTime } = this.props;
@@ -285,6 +338,11 @@ class BookingModal extends Component {
 
                             </div>
                         </div>
+                        <button className="button-email" onClick={this.toggleEmailModal}>
+                            {/* <FormattedMessage id="patient.booking-modal.enterEmail" />
+                                 */}
+                            Bạn đã từng đặt lịch ở hệ thống, điền thông tin nhanh
+                        </button>
                         <div className="booking-modal-footer">
                             <button className="btn-booking-confirm"
                                 onClick={() => this.handleConfirmBooking()}
@@ -299,6 +357,34 @@ class BookingModal extends Component {
                         </div>
                     </div>
                 </Modal>
+
+                <Modal
+                    isOpen={this.state.isEmailModalOpen}
+                    toggle={this.toggleEmailModal}
+                    className="email-modal"
+                >
+                    <div className="modal-header">
+                        <span>Nhập Email đã đặt lịch</span>
+                        <span onClick={this.toggleEmailModal}>
+                            <i className="fas fa-times"></i>
+                        </span>
+                    </div>
+                    <div className="modal-body">
+                        <input
+                            type="email"
+                            value={this.state.tempEmail}
+                            onChange={this.handleEmailChange}
+                            placeholder="Nhập email của bạn"
+                            className="form-control"
+                        />
+                    </div>
+                    <div className="modal-footer">
+                        <button onClick={this.handleConfirmEmail}>OK</button>
+                        <button onClick={this.toggleEmailModal}>Cancel</button>
+                    </div>
+                </Modal>
+
+
             </LoadingOverlay>
         );
     }

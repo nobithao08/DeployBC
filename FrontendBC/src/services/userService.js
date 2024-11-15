@@ -132,7 +132,9 @@ const getDoctorStatsByMonth = () => {
     return axios.get('/api/stats-doctor-by-month');
 };
 
-
+const getUserByEmail = (email) => {
+    return axios.get(`/api/get-user-by-email?email=${email}`);
+};
 
 
 export {
@@ -151,5 +153,5 @@ export {
     getAllHandbook, getAllDetailHandbookById,
     getAllPatientForDoctor, postSendRemedy,
     getAllBookings, searchSpecialty,
-    getStatsByMonth, getDoctorStatsByMonth
+    getStatsByMonth, getDoctorStatsByMonth, getUserByEmail
 }

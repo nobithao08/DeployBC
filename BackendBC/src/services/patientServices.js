@@ -180,8 +180,46 @@ let getAllBookings = async () => {
     }
 };
 
+let getUserByEmail = async (email) => {
+    try {
+        let userData = await db.User.findOne({
+            where: { email: email },
+            attributes: ['firstName', 'phonenumber', 'email', 'address', 'gender'],
+            include: [
+                {
+                    model: db.Booking,
+                    as: 'patientData',
+                    attributes: ['birthDate', 'reason'],
+                }
+            ],
+            raw: false,
+            nest: true
+        });
+
+        if (!userData) {
+            return {
+                errCode: 1,
+                errMessage: 'User not found'
+            };
+        }
+
+        return {
+            errCode: 0,
+            data: userData
+        };
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+        return {
+            errCode: 2,
+            errMessage: 'Failed to fetch user details'
+        };
+    }
+};
+
+
 module.exports = {
     postBookAppointment: postBookAppointment,
     postVerifyBookAppointment: postVerifyBookAppointment,
     getAllBookings: getAllBookings,
+    getUserByEmail: getUserByEmail
 }

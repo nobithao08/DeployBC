@@ -32,15 +32,16 @@
         button {
             margin: 0 10px;
             margin-right: 10px;
+        font-weight: 600;
             padding: 10px 15px;
             cursor: pointer;
-            background-color: #ffc400;
+            background-color: #18be95;
             color: white;
             border: none;
             border-radius: 5px;
 
             &:hover {
-                background-color: #d6af2e;
+                background-color: #0e8d6d;
             }
         }
     }
