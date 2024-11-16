@@ -5,7 +5,7 @@ import './BookingModal.scss';
 import { Modal } from 'reactstrap';
 import ProfileDoctor from '../ProfileDoctor';
 import _ from 'lodash';
-import DatePicker from '../../../../components/Input/DatePicker';
+// import DatePicker from '../../../../components/Input/DatePicker';
 import * as actions from '../../../../store/actions';
 import { LANGUAGES } from '../../../../utils';
 import Select from 'react-select';
@@ -25,15 +25,15 @@ class BookingModal extends Component {
             email: '',
             address: '',
             reason: '',
-            birthday: '',
+            birthDate: '',
             selectedGender: '',
             doctorId: '',
             genders: '',
             timeType: '',
             isShowLoading: false,
 
-            isEmailModalOpen: false,  // Trạng thái của modal phụ
-            tempEmail: ''             // Email tạm lưu khi nhập trong modal phụ
+            isEmailModalOpen: false,
+            tempEmail: ''
         }
     }
 
@@ -89,12 +89,13 @@ class BookingModal extends Component {
         this.setState({
             ...stateCopy
         })
-    }
+        if (id === 'birthDate') {
+            valueInput = valueInput ? parseInt(valueInput, 10) : '';
+        }
 
-    handleOnchangeDatePicker = (date) => {
         this.setState({
-            birthday: date[0]
-        })
+            [id]: valueInput
+        });
     }
 
     handleChangeSelect = (selectedOption) => {
@@ -133,12 +134,12 @@ class BookingModal extends Component {
 
 
     handleConfirmBooking = async () => {
-        //validate input
-        // data.email || !data.doctorId || !data.timeType || !data.date
         this.setState({
             isShowLoading: true
-        })
-        let date = new Date(this.state.birthday).getTime();
+        });
+
+        let date = this.state.birthDate;
+
         let timeString = this.buildTimeBooking(this.props.dataTime);
         let doctorName = this.buildDoctorName(this.props.dataTime);
 
@@ -149,21 +150,21 @@ class BookingModal extends Component {
             address: this.state.address,
             reason: this.state.reason,
             date: this.props.dataTime.date,
-            birthday: date,
+            birthDate: date,
             selectedGender: this.state.selectedGender.value,
             doctorId: this.state.doctorId,
             timeType: this.state.timeType,
             language: this.props.language,
             timeString: timeString,
             doctorName: doctorName
-        })
+        });
 
         this.setState({
             isShowLoading: false
-        })
+        });
 
         if (res && res.errCode === 0) {
-            toast.success('Đặt lịch hẹn thành công!')
+            toast.success('Đặt lịch hẹn thành công!');
             if (this.props.history) {
                 this.props.history.push('/booking-success');
             }
@@ -173,17 +174,17 @@ class BookingModal extends Component {
                 email: '',
                 address: '',
                 reason: '',
-                birthday: '',
+                birthDate: '',
                 selectedGender: '',
                 doctorId: '',
                 timeType: ''
             });
             this.props.closeBookingClose();
         } else {
-            toast.error('Vui lòng điền đầy đủ thông tin!')
+            toast.error('Vui lòng điền đầy đủ thông tin!');
         }
-
     }
+
     toggleEmailModal = () => {
         this.setState({ isEmailModalOpen: !this.state.isEmailModalOpen });
     }
@@ -204,14 +205,13 @@ class BookingModal extends Component {
             if (res) {
                 if (res && res.data) {
                     let userData = res.data;
-                    // console.log('User Data:', userData);
                     this.setState({
                         fullName: userData.firstName || '',
                         phonenumber: userData.phonenumber || '',
                         email: this.state.tempEmail || userData.email,
                         address: userData.address || '',
                         reason: userData.patientData && userData.patientData[0]?.reason || '',
-                        birthday: userData.patientData && userData.patientData[0]?.birthDate ? new Date(userData.patientData[0].birthDate) : '',
+                        birthDate: userData.patientData && userData.patientData[0]?.birthDate || '',
                         selectedGender: this.state.genders.find(gender => gender.value === userData.gender) || '',
                         isEmailModalOpen: false
                     }, () => {
@@ -240,7 +240,7 @@ class BookingModal extends Component {
             email: '',
             address: '',
             reason: '',
-            birthday: '',
+            birthDate: '',
             selectedGender: '',
             doctorId: '',
             timeType: ''
@@ -333,12 +333,16 @@ class BookingModal extends Component {
 
                                 <div className="col-6 form-group">
                                     <label><FormattedMessage id="patient.booking-modal.birthday" /></label>
-                                    <DatePicker
-                                        onChange={this.handleOnchangeDatePicker}
+                                    <input
+                                        type="number"
                                         className="form-control"
-                                        value={this.state.birthday}
+                                        value={this.state.birthDate || ''}
+                                        onChange={(event) => this.handleOnchangeInput(event, 'birthDate')}
+                                        min="1930"
+                                        max={new Date().getFullYear()}
                                     />
                                 </div>
+
                                 <div className="col-6 form-group">
                                     <label><FormattedMessage id="patient.booking-modal.gender" /></label>
                                     <Select
@@ -424,6 +428,5 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-// export default connect(mapStateToProps, mapDispatchToProps)(BookingModal);
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BookingModal));
 

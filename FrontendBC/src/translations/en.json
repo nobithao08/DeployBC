@@ -161,7 +161,7 @@
             "email": "Email",
             "address": "Address",
             "reason": "Reasons for medical examination",
-            "birthday": "Date of birth",
+            "birthday": "Year of birth",
             "gender": "Genders",
             "btnConfirm": "Confirm",
             "btnCancel": "Cancel",

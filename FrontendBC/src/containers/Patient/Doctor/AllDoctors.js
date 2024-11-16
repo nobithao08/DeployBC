@@ -11,18 +11,21 @@ class AllDoctors extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataDoctors: [],  // Dữ liệu bác sĩ
-            doctorStats: {},  // Số lượng lịch hẹn của từng bác sĩ
-            sortOption: 'appointment', // Tiêu chí sắp xếp mặc định là theo số lượng lịch hẹn
+            dataDoctors: [],
+            doctorStats: {},
+            sortOption: 'name',
         };
     }
 
     async componentDidMount() {
         let res = await getAllDoctors();
         if (res && res.errCode === 0) {
-            this.setState({
-                dataDoctors: res.data ? res.data : [],
-            });
+            this.setState(
+                {
+                    dataDoctors: res.data ? res.data : [],
+                },
+                this.sortDoctors
+            );
         }
 
         const doctorStats = {};
@@ -42,8 +45,9 @@ class AllDoctors extends Component {
             }
         }
 
-        this.setState({ doctorStats });
+        this.setState({ doctorStats }, this.sortDoctors);
     }
+
 
     handleViewDoctor = (doctorId) => {
         if (this.props.history) {
@@ -53,7 +57,7 @@ class AllDoctors extends Component {
 
     handleSortChange = (event) => {
         const sortOption = event.target.value;
-        this.setState({ sortOption }, this.sortDoctors);  // Cập nhật tiêu chí và sắp xếp lại
+        this.setState({ sortOption }, this.sortDoctors);
     }
 
     sortDoctors = () => {
@@ -61,14 +65,12 @@ class AllDoctors extends Component {
         let sortedDoctors = [...dataDoctors];
 
         if (sortOption === 'appointment') {
-            // Sắp xếp theo số lượng lịch hẹn (giảm dần)
             sortedDoctors.sort((a, b) => (doctorStats[b.id] || 0) - (doctorStats[a.id] || 0));
         } else if (sortOption === 'name') {
-            // Sắp xếp theo tên bác sĩ (theo thứ tự bảng chữ cái)
             sortedDoctors.sort((a, b) => {
                 const nameA = a.firstName + ' ' + a.lastName;
                 const nameB = b.firstName + ' ' + b.lastName;
-                return nameA.localeCompare(nameB, 'vi', { sensitivity: 'base' }); // Sắp xếp theo tên có xét dấu
+                return nameA.localeCompare(nameB, 'vi', { sensitivity: 'base' });
             });
         }
 
@@ -86,15 +88,15 @@ class AllDoctors extends Component {
                 <div className="all-doctors-container">
                     <h2><FormattedMessage id="more.all-doctors" /></h2>
 
-                    {/* Dropdown để chọn tiêu chí sắp xếp */}
                     <div className="sort-container">
                         <select
                             className="sort-select"
                             value={sortOption}
                             onChange={this.handleSortChange}
                         >
-                            <option value="appointment">Sắp xếp theo lượt khám</option>
                             <option value="name">Sắp xếp theo tên</option>
+                            <option value="appointment">Sắp xếp theo lượt khám</option>
+
                         </select>
                     </div>
 

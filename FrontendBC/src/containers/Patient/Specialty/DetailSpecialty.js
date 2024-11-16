@@ -11,67 +11,81 @@ import _ from 'lodash';
 import { LANGUAGES } from '../../../utils';
 
 class DetailSpecialty extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
             arrDoctorId: [],
             dataDetailSpecialty: {},
-            listProvince: []
-        }
+            listProvince: [],
+            doctorCountByProvince: {} // Thêm state để lưu số lượng bác sĩ theo tỉnh
+        };
     }
 
     async componentDidMount() {
         if (this.props.match && this.props.match.params && this.props.match.params.id) {
             let id = this.props.match.params.id;
 
+            // Gọi API lấy dữ liệu chuyên khoa
             let res = await getAllDetailSpecialtyById({
                 id: id,
                 location: 'ALL'
             });
 
+            // Gọi API lấy danh sách tỉnh
             let resProvince = await getAllCodeService('PROVINCE');
 
             if (res && res.errCode === 0 && resProvince && resProvince.errCode === 0) {
                 let data = res.data;
-                let arrDoctorId = [];
-                if (data && !_.isEmpty(res.data)) {
+                let doctorCountByProvince = {}; // Số lượng bác sĩ theo tỉnh
+                let totalDoctors = 0; // Tổng số bác sĩ cho "Toàn quốc"
+
+                // Nếu có dữ liệu bác sĩ
+                if (data && !_.isEmpty(data)) {
                     let arr = data.doctorSpecialty;
                     if (arr && arr.length > 0) {
-                        arr.map(item => {
-                            arrDoctorId.push(item.doctorId)
-                        })
+                        arr.forEach(item => {
+                            let province = item.provinceId || 'ALL';
+
+                            // Tính số bác sĩ trong từng tỉnh
+                            if (!doctorCountByProvince[province]) {
+                                doctorCountByProvince[province] = 0;
+                            }
+                            doctorCountByProvince[province]++;
+
+                            // Cộng dồn tổng số bác sĩ cho "Toàn quốc"
+                            totalDoctors++;
+                        });
+
+                        // Gán tổng số bác sĩ cho key "ALL"
+                        doctorCountByProvince['ALL'] = totalDoctors;
                     }
                 }
 
+                // Thêm "Toàn quốc" vào danh sách tỉnh
                 let dataProvince = resProvince.data;
                 if (dataProvince && dataProvince.length > 0) {
                     dataProvince.unshift({
-                        createdAt: null,
                         keyMap: "ALL",
                         type: "PROVINCE",
-                        valueEn: "ALL",
+                        valueEn: "All provinces",
                         valueVi: "Toàn quốc",
-                    })
+                    });
                 }
 
+                // Cập nhật state
                 this.setState({
                     dataDetailSpecialty: res.data,
-                    arrDoctorId: arrDoctorId,
-                    listProvince: dataProvince ? dataProvince : []
-                })
+                    arrDoctorId: data.doctorSpecialty.map(item => item.doctorId),
+                    listProvince: dataProvince ? dataProvince : [],
+                    doctorCountByProvince: doctorCountByProvince // Lưu số lượng bác sĩ
+                });
             }
         }
     }
 
-    async componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.language !== prevProps.language) {
 
-        }
 
-    }
-
-    handleOnChangeSelect = async (event) => {
+    async handleOnChangeSelect(event) {
         if (this.props.match && this.props.match.params && this.props.match.params.id) {
             let id = this.props.match.params.id;
             let location = event.target.value;
@@ -84,12 +98,11 @@ class DetailSpecialty extends Component {
             if (res && res.errCode === 0) {
                 let data = res.data;
                 let arrDoctorId = [];
-                if (data && !_.isEmpty(res.data)) {
+
+                if (data && !_.isEmpty(data)) {
                     let arr = data.doctorSpecialty;
                     if (arr && arr.length > 0) {
-                        arr.map(item => {
-                            arrDoctorId.push(item.doctorId);
-                        });
+                        arrDoctorId = arr.map(item => item.doctorId);
                     }
                 }
 
@@ -101,8 +114,9 @@ class DetailSpecialty extends Component {
         }
     }
 
+
     render() {
-        let { arrDoctorId, dataDetailSpecialty, listProvince } = this.state;
+        let { arrDoctorId, dataDetailSpecialty, listProvince, doctorCountByProvince } = this.state;
         let { language } = this.props;
 
         return (
@@ -119,15 +133,20 @@ class DetailSpecialty extends Component {
                         <select onChange={(event) => this.handleOnChangeSelect(event)}>
                             {listProvince && listProvince.length > 0 &&
                                 listProvince.map((item, index) => {
+                                    const provinceName = language === LANGUAGES.VI ? item.valueVi : item.valueEn;
+                                    const doctorCount = doctorCountByProvince[item.keyMap] || 0; // Lấy số lượng bác sĩ
                                     return (
                                         <option key={index} value={item.keyMap}>
-                                            {language === LANGUAGES.VI ? item.valueVi : item.valueEn}
+                                            {provinceName} ({doctorCount} bác sĩ)
                                         </option>
                                     );
                                 })
                             }
                         </select>
                     </div>
+
+
+
 
                     {arrDoctorId && arrDoctorId.length > 0 ? (
                         arrDoctorId.map((item, index) => {
@@ -164,8 +183,8 @@ class DetailSpecialty extends Component {
             </div>
         );
     }
-
 }
+
 
 const mapStateToProps = state => {
     return {
