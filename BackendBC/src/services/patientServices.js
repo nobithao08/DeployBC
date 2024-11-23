@@ -216,10 +216,46 @@ let getUserByEmail = async (email) => {
     }
 };
 
+let cancelBooking = async (id, reason) => {
+    try {
+        let booking = await db.Booking.findOne({
+            where: {
+                id: id,
+                statusId: 'S1',
+            },
+            raw: false
+        });
+
+        if (!booking) {
+            return {
+                errCode: 2,
+                errMessage: 'Lịch hẹn không tìm thấy hoặc không thể hủy.',
+            };
+        }
+
+        booking.statusId = 'S4';
+        booking.cancelReason = reason;
+        await booking.save();
+
+        return {
+            errCode: 0,
+            errMessage: 'Hủy lịch hẹn thành công.',
+        };
+    } catch (error) {
+        console.error('Lỗi trong cancelBooking service:', error);
+        return {
+            errCode: -1,
+            errMessage: 'Lỗi từ server.',
+        };
+    }
+};
+
+
 
 module.exports = {
     postBookAppointment: postBookAppointment,
     postVerifyBookAppointment: postVerifyBookAppointment,
     getAllBookings: getAllBookings,
-    getUserByEmail: getUserByEmail
+    getUserByEmail: getUserByEmail,
+    cancelBooking
 }

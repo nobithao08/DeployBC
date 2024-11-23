@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getAllBookings } from '../../../services/userService';
+import { getAllBookings, cancelBooking } from '../../../services/userService';
 import './AllBookings.scss';
 import HomeHeader from '../../HomePage/HomeHeader';
 import { toast } from 'react-toastify';
@@ -64,6 +64,34 @@ class AllBookings extends Component {
         }
     };
 
+    handleCancelBooking = async (id) => {
+        const reason = prompt("Vui lòng nhập lý do hủy lịch:");
+        if (!reason) {
+            toast.error("Lý do hủy không được để trống!");
+            return;
+        }
+
+        try {
+
+            const res = await cancelBooking({ id, reason });
+            if (res && res.errCode === 0) {
+                toast.success("Hủy lịch hẹn thành công.");
+                this.setState((prevState) => ({
+                    bookings: prevState.bookings.map((booking) =>
+                        booking.id === id ? { ...booking, statusId: 'S4' } : booking
+                    ),
+                }));
+            } else {
+                toast.error("Hủy lịch hẹn thất bại, vui lòng thử lại.");
+            }
+        } catch (error) {
+            console.error("Lỗi khi hủy lịch hẹn:", error);
+            toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+        }
+    };
+
+
+
     render() {
         const { bookings, loading, error, email } = this.state;
 
@@ -108,8 +136,18 @@ class AllBookings extends Component {
                                                 <td>{booking.doctorInfo.lastName} {booking.doctorInfo.firstName}</td>
                                                 <td>{new Date(Number(booking.date)).toLocaleDateString()}</td>
                                                 <td>{this.getTimeDisplay(booking.timeType)}</td>
-                                                <td>{booking.reason}</td>
-                                                <td>{this.getBookingStatus(booking.statusId)}</td>
+                                                <td>{booking.reason || '_'}</td>  {/* Hiển thị lý do hủy nếu có */}
+                                                <td>
+                                                    {this.getBookingStatus(booking.statusId)} {/* Trạng thái */}
+                                                    {booking.statusId === 'S1' && (  // Hiển thị nút hủy nếu trạng thái là "S1"
+                                                        <button
+                                                            className="btn-cancel"
+                                                            onClick={() => this.handleCancelBooking(booking.id)}
+                                                        >
+                                                            Hủy lịch
+                                                        </button>
+                                                    )}
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (
@@ -118,6 +156,7 @@ class AllBookings extends Component {
                                         </tr>
                                     )}
                                 </tbody>
+
                             </table>
                         )}
                     </div>
@@ -125,6 +164,8 @@ class AllBookings extends Component {
             </div>
         );
     }
+
+
 
     getBookingStatus(statusId) {
         switch (statusId) {

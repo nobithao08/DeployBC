@@ -68,9 +68,33 @@ let handleGetUserByEmail = async (req, res) => {
     }
 };
 
+let cancelBooking = async (req, res) => {
+    try {
+        let { id, reason } = req.body;
+
+        if (!id || !reason) {
+            return res.status(400).json({
+                errCode: 1,
+                errMessage: 'Thiếu thông tin cần thiết.',
+            });
+        }
+
+        let result = await patientService.cancelBooking(id, reason);
+
+        return res.status(result.errCode === 0 ? 200 : 500).json(result);
+    } catch (error) {
+        console.error('Lỗi trong cancelBooking:', error);
+        return res.status(500).json({
+            errCode: -1,
+            errMessage: 'Lỗi từ server.',
+        });
+    }
+};
+
 module.exports = {
     postBookAppointment: postBookAppointment,
     postVerifyBookAppointment: postVerifyBookAppointment,
     getAllBookings: getAllBookings,
-    handleGetUserByEmail: handleGetUserByEmail
+    handleGetUserByEmail: handleGetUserByEmail,
+    cancelBooking
 }

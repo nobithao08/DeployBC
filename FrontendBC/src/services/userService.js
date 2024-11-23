@@ -136,6 +136,10 @@ const getUserByEmail = (email) => {
     return axios.get(`/api/get-user-by-email?email=${email}`);
 };
 
+const cancelBooking = async (data) => {
+    return await axios.post('/api/cancel-booking', data);
+};
+
 
 export {
     handleLoginApi, getAllUsers,
@@ -153,5 +157,6 @@ export {
     getAllHandbook, getAllDetailHandbookById,
     getAllPatientForDoctor, postSendRemedy,
     getAllBookings, searchSpecialty,
-    getStatsByMonth, getDoctorStatsByMonth, getUserByEmail
+    getStatsByMonth, getDoctorStatsByMonth, getUserByEmail,
+    cancelBooking
 }
