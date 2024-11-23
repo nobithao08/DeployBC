@@ -51,7 +51,7 @@ class AdminBookingManagement extends Component {
         try {
             let res = await postVerifyBookAppointment({ token, doctorId });
             if (res && res.errCode === 0) {
-                toast.success('Đặt lịch hẹn thành công!');
+                toast.success('Xác nhận lịch hẹn thành công!');
 
                 const verifiedBooking = this.state.newBookings.find(booking => booking.token === token);
 

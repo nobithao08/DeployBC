@@ -258,7 +258,7 @@ class BookingModal extends Component {
             <LoadingOverlay
                 active={this.state.isShowLoading}
                 spinner
-                text='Loading...'
+                text='Vui lòng chờ...'
             >
                 <Modal
                     isOpen={isOpenModal}

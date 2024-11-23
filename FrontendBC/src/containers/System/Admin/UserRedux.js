@@ -213,7 +213,7 @@ class UserRedux extends Component {
                     <FormattedMessage id="manage-user.title" />
                 </div>
                 <div className="user-redux-body" >
-                    <div className="all-user mb-3">
+                    <div className="all-user mb-3 container">
                         <b><FormattedMessage id="manage-user.add" /></b>
                     </div>
                     <div className="container">

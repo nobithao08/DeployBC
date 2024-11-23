@@ -163,7 +163,9 @@ class HomeHeader extends Component {
                                 {/* <div><b><FormattedMessage id="homeheader.handbook" /></b></div>
                                  */}
 
-                                <div className='booking-text'> <i className="fas fa-clock"></i> Lịch hẹn</div>
+                                <div className='booking-text'> <i className="fas fa-clock"></i>
+                                    <FormattedMessage id="homeheader.appointment" />
+                                </div>
                             </div>
                             <div className="support">
                                 <a href="https://www.facebook.com/profile.php?id=61566821611802" target="_blank" rel="noopener noreferrer">

@@ -26,7 +26,7 @@ const ManageChartDoctor = () => {
             },
         },
         title: {
-            text: 'Thống kê lịch hẹn hoàn thành theo tháng',
+            text: 'Thống kê số lượng lịch hẹn hoàn thành của bác sĩ theo tháng',
             align: 'left',
         },
         colors: ['#00E396', '#FF4560', '#008FFB', '#775DD0', '#FEB019'],
@@ -114,7 +114,7 @@ const ManageChartDoctor = () => {
                 {/* Hiển thị bảng dữ liệu */}
                 {currentItems.length > 0 ? (
                     <div>
-                        <table>
+                        <table id="TableManageUser">
                             <thead>
                                 <tr>
                                     <th>Tháng</th>

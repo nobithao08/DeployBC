@@ -105,7 +105,7 @@ class AllBookings extends Component {
                                     {bookings.length > 0 ? (
                                         bookings.map((booking) => (
                                             <tr key={booking.id}>
-                                                <td>{booking.doctorInfo.firstName} {booking.doctorInfo.lastName}</td>
+                                                <td>{booking.doctorInfo.lastName} {booking.doctorInfo.firstName}</td>
                                                 <td>{new Date(Number(booking.date)).toLocaleDateString()}</td>
                                                 <td>{this.getTimeDisplay(booking.timeType)}</td>
                                                 <td>{booking.reason}</td>
