@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { getAllBookings, postVerifyBookAppointment } from "../../../services/userService";
+import { getAllBookings, postVerifyBookAppointment, cancelBooking } from "../../../services/userService";
 import './ManageAppointment.scss';
 import { toast } from 'react-toastify';
 import { FormattedMessage } from 'react-intl';
@@ -77,15 +77,32 @@ class AdminBookingManagement extends Component {
         }));
     };
 
-    handleCancelBooking = (token) => {
-        const canceledBooking = this.state.newBookings.find(booking => booking.token === token);
+    handleCancelBooking = async (id) => {
+        const reason = prompt("Vui lòng nhập lý do hủy lịch:");
+        if (!reason) {
+            toast.error("Lý do hủy không được để trống!");
+            return;
+        }
 
-        this.setState(prevState => ({
-            newBookings: prevState.newBookings.filter(booking => booking.token !== token),
-            canceledBookings: [...prevState.canceledBookings, { ...canceledBooking, statusId: 'S4' }]
-        }));
+        try {
+            const res = await cancelBooking({ id, reason });
+            if (res && res.errCode === 0) {
+                toast.success("Hủy lịch hẹn thành công.");
 
-        toast.success('Đã hủy lịch hẹn thành công!');
+                this.setState((prevState) => ({
+                    newBookings: prevState.newBookings.filter(booking => booking.id !== id),
+                    canceledBookings: [
+                        ...prevState.canceledBookings,
+                        { ...prevState.newBookings.find(booking => booking.id === id), statusId: 'S4' }
+                    ]
+                }));
+            } else {
+                toast.error("Hủy lịch hẹn thất bại, vui lòng thử lại.");
+            }
+        } catch (error) {
+            console.error("Lỗi khi hủy lịch hẹn:", error);
+            toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+        }
     };
 
     getTimeDisplay = (timeType) => {
@@ -166,7 +183,7 @@ class AdminBookingManagement extends Component {
                                         <button className="btn-confirm" onClick={() => this.handleVerifyBooking(booking.token, booking.doctorId)}>
                                             <i className="fas fa-check"></i>
                                         </button>
-                                        <button className="btn-cancel" onClick={() => this.handleCancelBooking(booking.token)}>
+                                        <button className="btn-cancel" onClick={() => this.handleCancelBooking(booking.id)}>
                                             <i className="fas fa-times"></i>
                                         </button>
 
@@ -200,33 +217,19 @@ class AdminBookingManagement extends Component {
                         </button>
                     </div>
 
-                    {/* Hiển thị bảng dựa trên activeTab */}
-                    {activeTab === 'new' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.new" />, true)}
-                    {activeTab === 'confirmed' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.confirmed" />, false)}
-                    {activeTab === 'completed' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.completed" />, false)}
-                    {activeTab === 'canceled' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.canceled" />, false)}
+                    {renderTable(currentBookings, `Danh sách ${activeTab}`, true)}
 
-                    {/* Phân trang */}
                     <div className="pagination">
-                        <button
-                            onClick={this.handlePreviousPage}
-                            disabled={currentPage === 1}
-                        >
-                            &laquo; Trước
-                        </button>
-                        <span>{`Trang ${currentPage} / ${totalPages}`}</span>
-                        <button
-                            onClick={this.handleNextPage}
-                            disabled={currentPage === totalPages}
-                        >
-                            Tiếp &raquo;
-                        </button>
+                        <button disabled={currentPage === 1} onClick={this.handlePreviousPage}>Prev</button>
+                        <span>{currentPage} / {totalPages}</span>
+                        <button disabled={currentPage === totalPages} onClick={this.handleNextPage}>Next</button>
                     </div>
                 </div>
             </div>
         );
     }
 }
+
 
 const mapStateToProps = (state) => ({
     language: state.app.language,
