@@ -129,6 +129,7 @@
         "date": "Date",
         "time": "Time",
         "actions": "Actions",
+        "cancelReason": "Reason for cancellation",
         "confirm": "Confirm",
         "cancel": "Cancel"
     },

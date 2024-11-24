@@ -4,6 +4,7 @@ import { getAllBookings, postVerifyBookAppointment, cancelBooking } from "../../
 import './ManageAppointment.scss';
 import { toast } from 'react-toastify';
 import { FormattedMessage } from 'react-intl';
+import Modal from 'react-modal';
 
 class AdminBookingManagement extends Component {
     constructor(props) {
@@ -18,6 +19,9 @@ class AdminBookingManagement extends Component {
             activeTab: 'new',
             currentPage: 1,
             bookingsPerPage: 5,
+            showCancelModal: false,
+            cancelReason: '',
+            bookingToCancel: null,
         };
     }
 
@@ -131,8 +135,57 @@ class AdminBookingManagement extends Component {
         this.setState(prevState => ({ currentPage: prevState.currentPage - 1 }));
     };
 
+    handleCancelBooking = (booking) => {
+        this.setState({
+            showCancelModal: true,
+            bookingToCancel: booking,
+        });
+    };
+
+    handleCancelReasonChange = (e) => {
+        this.setState({ cancelReason: e.target.value });
+    };
+
+    handleCloseCancelModal = () => {
+        this.setState({ showCancelModal: false, cancelReason: '', bookingToCancel: null });
+    };
+
+    handleSubmitCancel = async () => {
+        const { cancelReason, bookingToCancel } = this.state;
+
+        if (!cancelReason) {
+            toast.error("Lý do hủy không được để trống!");
+            return;
+        }
+
+        try {
+            const res = await cancelBooking({ id: bookingToCancel.id, reason: cancelReason });
+            if (res && res.errCode === 0) {
+                toast.success("Hủy lịch hẹn thành công.");
+
+                // Cập nhật lý do hủy vào đối tượng booking trong canceledBookings
+                this.setState((prevState) => ({
+                    newBookings: prevState.newBookings.filter(booking => booking.id !== bookingToCancel.id),
+                    canceledBookings: [
+                        ...prevState.canceledBookings,
+                        { ...bookingToCancel, statusId: 'S4', cancelReason } // Lưu lý do hủy vào đối tượng booking
+                    ],
+                    showCancelModal: false,
+                    cancelReason: '',
+                    bookingToCancel: null,
+                }));
+            } else {
+                toast.error("Hủy lịch hẹn thất bại, vui lòng thử lại.");
+            }
+        } catch (error) {
+            console.error("Lỗi khi hủy lịch hẹn:", error);
+            toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+        }
+    };
+
+
     render() {
-        const { loading, error, activeTab, currentPage, bookingsPerPage } = this.state;
+        const { loading, error, activeTab, currentPage, bookingsPerPage, showCancelModal, cancelReason } = this.state;
         const { newBookings, confirmedBookings, completedBookings, canceledBookings } = this.state;
 
         if (loading) return <div>Loading bookings...</div>;
@@ -153,7 +206,7 @@ class AdminBookingManagement extends Component {
                     canceledBookings.slice(indexOfFirstBooking, indexOfLastBooking);
 
         const renderTable = (bookings, title, showActions = false) => (
-            <div className=" table-container">
+            <div className="table-container">
                 <h3>{title}</h3>
                 <table>
                     <thead>
@@ -165,6 +218,9 @@ class AdminBookingManagement extends Component {
                             <th><FormattedMessage id="manage-appointment.doctor" /></th>
                             <th><FormattedMessage id="manage-appointment.date" /></th>
                             <th><FormattedMessage id="manage-appointment.time" /></th>
+                            {title.props.id === "manage-appointment.canceled" && (
+                                <th><FormattedMessage id="manage-appointment.cancelReason" /></th>
+                            )}
                             {showActions && <th><FormattedMessage id="manage-appointment.actions" /></th>}
                         </tr>
                     </thead>
@@ -178,15 +234,17 @@ class AdminBookingManagement extends Component {
                                 <td>{booking.doctorInfo.lastName} {booking.doctorInfo.firstName || ''}</td>
                                 <td>{new Date(Number(booking.date)).toLocaleDateString()}</td>
                                 <td>{this.getTimeDisplay(booking.timeType)}</td>
+                                {title.props.id === "manage-appointment.canceled" && (
+                                    <td>{booking.cancelReason || 'Không có lý do'}</td>
+                                )}
                                 {showActions && (
                                     <td>
                                         <button className="btn-confirm" onClick={() => this.handleVerifyBooking(booking.token, booking.doctorId)}>
                                             <i className="fas fa-check"></i>
                                         </button>
-                                        <button className="btn-cancel" onClick={() => this.handleCancelBooking(booking.id)}>
+                                        <button className="btn-cancel" onClick={() => this.handleCancelBooking(booking)}>
                                             <i className="fas fa-times"></i>
                                         </button>
-
                                     </td>
                                 )}
                             </tr>
@@ -195,6 +253,8 @@ class AdminBookingManagement extends Component {
                 </table>
             </div>
         );
+
+
 
         return (
             <div className="admin-booking-management main-content">
@@ -217,14 +277,43 @@ class AdminBookingManagement extends Component {
                         </button>
                     </div>
 
-                    {renderTable(currentBookings, `Danh sách ${activeTab}`, true)}
+                    {/* Hiển thị bảng dựa trên activeTab */}
+                    {activeTab === 'new' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.new" />, true)}
+                    {activeTab === 'confirmed' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.confirmed" />, false)}
+                    {activeTab === 'completed' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.completed" />, false)}
+                    {activeTab === 'canceled' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.canceled" />, false)}
 
+                    {/* Phân trang */}
                     <div className="pagination">
-                        <button disabled={currentPage === 1} onClick={this.handlePreviousPage}>Prev</button>
-                        <span>{currentPage} / {totalPages}</span>
-                        <button disabled={currentPage === totalPages} onClick={this.handleNextPage}>Next</button>
+                        <button onClick={this.handlePreviousPage} disabled={currentPage === 1}>
+                            &laquo; Trước
+                        </button>
+                        <span>{`Trang ${currentPage} / ${totalPages}`}</span>
+                        <button onClick={this.handleNextPage} disabled={currentPage === totalPages}>
+                            Tiếp &raquo;
+                        </button>
                     </div>
                 </div>
+
+                {/* Modal Hủy Lịch */}
+                <Modal
+                    isOpen={showCancelModal}
+                    onRequestClose={this.handleCloseCancelModal}
+                    contentLabel="Cancel Booking"
+                    ariaHideApp={false}
+                >
+                    <h3>Nhập lý do hủy lịch</h3>
+                    <textarea
+                        value={cancelReason}
+                        onChange={this.handleCancelReasonChange}
+                        placeholder="Lý do hủy..."
+                        rows="4"
+                    />
+                    <div className="modal-buttons">
+                        <button className="cancel-btn" onClick={this.handleSubmitCancel}>Hủy lịch</button>
+                        <button className="close-btn" onClick={this.handleCloseCancelModal}>Đóng</button>
+                    </div>
+                </Modal>
             </div>
         );
     }

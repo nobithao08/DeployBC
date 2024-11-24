@@ -129,6 +129,7 @@
         "date": "Ngày",
         "time": "Thời gian",
         "actions": "Hành động",
+        "cancelReason": "Lý do hủy",
         "confirm": "Xác nhận",
         "cancel": "Hủy"
     },
