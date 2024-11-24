@@ -5,6 +5,7 @@ import { getAllBookings, cancelBooking } from '../../../services/userService';
 import './AllBookings.scss';
 import HomeHeader from '../../HomePage/HomeHeader';
 import { toast } from 'react-toastify';
+import Modal from 'react-modal';
 
 class AllBookings extends Component {
     constructor(props) {
@@ -14,6 +15,10 @@ class AllBookings extends Component {
             loading: false,
             error: '',
             email: '',
+            showCancelModal: false,
+            cancelReason: '',
+            bookingToCancel: null,
+            hasCanceledBookings: false,
         };
     }
 
@@ -24,7 +29,7 @@ class AllBookings extends Component {
             return;
         }
 
-        this.setState({ loading: true, bookings: [], error: '' });
+        this.setState({ loading: true, bookings: [], error: '', hasCanceledBookings: false });
 
         try {
             const res = await getAllBookings();
@@ -32,7 +37,8 @@ class AllBookings extends Component {
             if (res && res.errCode === 0) {
                 const filteredBookings = res.data.filter(booking => booking.patientData.email.toLowerCase().includes(email.toLowerCase()));
                 if (filteredBookings.length > 0) {
-                    this.setState({ bookings: filteredBookings });
+                    const hasCanceled = filteredBookings.some(booking => booking.statusId === 'S4');
+                    this.setState({ bookings: filteredBookings, hasCanceledBookings: hasCanceled });
                 } else {
                     this.setState({ error: 'Không tìm thấy lịch hẹn với email này.' });
                     toast.error("Không tìm thấy lịch hẹn.");
@@ -64,22 +70,43 @@ class AllBookings extends Component {
         }
     };
 
-    handleCancelBooking = async (id) => {
-        const reason = prompt("Vui lòng nhập lý do hủy lịch:");
-        if (!reason) {
+    handleCancelBooking = (booking) => {
+        this.setState({
+            showCancelModal: true,
+            bookingToCancel: booking,
+        });
+    };
+
+    handleCancelReasonChange = (e) => {
+        this.setState({ cancelReason: e.target.value });
+    };
+
+    handleCloseCancelModal = () => {
+        this.setState({ showCancelModal: false, cancelReason: '', bookingToCancel: null });
+    };
+
+    handleSubmitCancel = async () => {
+        const { cancelReason, bookingToCancel } = this.state;
+
+        if (!cancelReason) {
             toast.error("Lý do hủy không được để trống!");
             return;
         }
 
         try {
-
-            const res = await cancelBooking({ id, reason });
+            const res = await cancelBooking({ id: bookingToCancel.id, reason: cancelReason });
             if (res && res.errCode === 0) {
                 toast.success("Hủy lịch hẹn thành công.");
                 this.setState((prevState) => ({
-                    bookings: prevState.bookings.map((booking) =>
-                        booking.id === id ? { ...booking, statusId: 'S4' } : booking
+                    bookings: prevState.bookings.map(booking =>
+                        booking.id === bookingToCancel.id
+                            ? { ...booking, statusId: 'S4', cancelReason }
+                            : booking
                     ),
+                    showCancelModal: false,
+                    cancelReason: '',
+                    bookingToCancel: null,
+                    hasCanceledBookings: true,
                 }));
             } else {
                 toast.error("Hủy lịch hẹn thất bại, vui lòng thử lại.");
@@ -90,10 +117,8 @@ class AllBookings extends Component {
         }
     };
 
-
-
     render() {
-        const { bookings, loading, error, email } = this.state;
+        const { bookings, loading, error, email, showCancelModal, cancelReason, hasCanceledBookings } = this.state;
 
         return (
             <div>
@@ -125,8 +150,9 @@ class AllBookings extends Component {
                                         <th>Bác sĩ</th>
                                         <th>Ngày hẹn</th>
                                         <th>Thời gian</th>
-                                        <th>Lý do</th>
+                                        <th>Lý do khám</th>
                                         <th>Trạng thái</th>
+                                        {hasCanceledBookings && <th>Lý do hủy</th>}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -136,23 +162,29 @@ class AllBookings extends Component {
                                                 <td>{booking.doctorInfo.lastName} {booking.doctorInfo.firstName}</td>
                                                 <td>{new Date(Number(booking.date)).toLocaleDateString()}</td>
                                                 <td>{this.getTimeDisplay(booking.timeType)}</td>
-                                                <td>{booking.reason || '_'}</td>  {/* Hiển thị lý do hủy nếu có */}
+                                                <td>{booking.reason || '_'}</td>
+
                                                 <td>
-                                                    {this.getBookingStatus(booking.statusId)} {/* Trạng thái */}
-                                                    {booking.statusId === 'S1' && (  // Hiển thị nút hủy nếu trạng thái là "S1"
+                                                    {this.getBookingStatus(booking.statusId)}
+                                                    {booking.statusId === 'S1' && (
                                                         <button
                                                             className="btn-cancel"
-                                                            onClick={() => this.handleCancelBooking(booking.id)}
+                                                            onClick={() => this.handleCancelBooking(booking)}
                                                         >
                                                             Hủy lịch
                                                         </button>
                                                     )}
                                                 </td>
+                                                {hasCanceledBookings && (
+                                                    <td>
+                                                        {booking.statusId === 'S4' ? booking.cancelReason : '_'}
+                                                    </td>
+                                                )}
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="5">Không có lịch hẹn nào để hiển thị.</td>
+                                            <td colSpan={hasCanceledBookings ? 6 : 5}>Không có lịch hẹn nào để hiển thị.</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -161,11 +193,28 @@ class AllBookings extends Component {
                         )}
                     </div>
                 </div>
+
+                <Modal
+                    isOpen={showCancelModal}
+                    onRequestClose={this.handleCloseCancelModal}
+                    contentLabel="Cancel Booking"
+                    ariaHideApp={false}
+                >
+                    <h3>Nhập lý do hủy lịch</h3>
+                    <textarea
+                        value={cancelReason}
+                        onChange={this.handleCancelReasonChange}
+                        placeholder="Lý do hủy..."
+                        rows="4"
+                    />
+                    <div className="modal-buttons">
+                        <button className="cancel-btn" onClick={this.handleSubmitCancel}>Hủy lịch</button>
+                        <button className="close-btn" onClick={this.handleCloseCancelModal}>Đóng</button>
+                    </div>
+                </Modal>
             </div>
         );
     }
-
-
 
     getBookingStatus(statusId) {
         switch (statusId) {
