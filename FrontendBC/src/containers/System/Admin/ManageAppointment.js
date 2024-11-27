@@ -14,6 +14,7 @@ class AdminBookingManagement extends Component {
             confirmedBookings: [],
             completedBookings: [],
             canceledBookings: [],
+            pendingBookings: [],
             loading: true,
             error: null,
             activeTab: 'new',
@@ -35,14 +36,17 @@ class AdminBookingManagement extends Component {
                 const confirmedBookings = bookings.filter(b => b.statusId === 'S2');
                 const completedBookings = bookings.filter(b => b.statusId === 'S3');
                 const canceledBookings = bookings.filter(b => b.statusId === 'S4');
+                const pendingBookings = bookings.filter(b => b.statusId === 'S5');
 
                 this.setState({
                     newBookings,
                     confirmedBookings,
                     completedBookings,
                     canceledBookings,
+                    pendingBookings,
                     loading: false,
                 });
+
             } else {
                 this.setState({ error: res.errMessage, loading: false });
             }
@@ -57,10 +61,10 @@ class AdminBookingManagement extends Component {
             if (res && res.errCode === 0) {
                 toast.success('Xác nhận lịch hẹn thành công!');
 
-                const verifiedBooking = this.state.newBookings.find(booking => booking.token === token);
+                const verifiedBooking = this.state.pendingBookings.find(booking => booking.token === token);
 
                 this.setState(prevState => ({
-                    newBookings: prevState.newBookings.filter(booking => booking.token !== token),
+                    pendingBookings: prevState.pendingBookings.filter(booking => booking.token !== token),
                     confirmedBookings: [...prevState.confirmedBookings, { ...verifiedBooking, statusId: 'S2' }]
                 }));
             } else {
@@ -72,6 +76,7 @@ class AdminBookingManagement extends Component {
         }
     };
 
+
     handleCompleteBooking = (bookingId) => {
         this.setState(prevState => ({
             confirmedBookings: prevState.confirmedBookings.map(booking =>
@@ -81,7 +86,7 @@ class AdminBookingManagement extends Component {
         }));
     };
 
-    handleCancelBooking = async (id) => {
+    handleCancelBooking = async (booking) => {
         const reason = prompt("Vui lòng nhập lý do hủy lịch:");
         if (!reason) {
             toast.error("Lý do hủy không được để trống!");
@@ -89,15 +94,15 @@ class AdminBookingManagement extends Component {
         }
 
         try {
-            const res = await cancelBooking({ id, reason });
+            const res = await cancelBooking({ id: booking.id, reason });
             if (res && res.errCode === 0) {
                 toast.success("Hủy lịch hẹn thành công.");
 
-                this.setState((prevState) => ({
-                    newBookings: prevState.newBookings.filter(booking => booking.id !== id),
+                this.setState(prevState => ({
+                    pendingBookings: prevState.pendingBookings.filter(b => b.id !== booking.id),
                     canceledBookings: [
                         ...prevState.canceledBookings,
-                        { ...prevState.newBookings.find(booking => booking.id === id), statusId: 'S4' }
+                        { ...booking, statusId: 'S4', cancelReason: reason }
                     ]
                 }));
             } else {
@@ -108,6 +113,7 @@ class AdminBookingManagement extends Component {
             toast.error("Có lỗi xảy ra, vui lòng thử lại.");
         }
     };
+
 
     getTimeDisplay = (timeType) => {
         switch (timeType) {
@@ -203,7 +209,9 @@ class AdminBookingManagement extends Component {
         const currentBookings = activeTab === 'new' ? newBookings.slice(indexOfFirstBooking, indexOfLastBooking) :
             activeTab === 'confirmed' ? confirmedBookings.slice(indexOfFirstBooking, indexOfLastBooking) :
                 activeTab === 'completed' ? completedBookings.slice(indexOfFirstBooking, indexOfLastBooking) :
-                    canceledBookings.slice(indexOfFirstBooking, indexOfLastBooking);
+                    activeTab === 'pending' ? this.state.pendingBookings.slice(indexOfFirstBooking, indexOfLastBooking) : // Chỉnh sửa ở đây
+                        canceledBookings.slice(indexOfFirstBooking, indexOfLastBooking);
+
 
         const renderTable = (bookings, title, showActions = false) => (
             <div className="table-container">
@@ -221,7 +229,9 @@ class AdminBookingManagement extends Component {
                             {title.props.id === "manage-appointment.canceled" && (
                                 <th><FormattedMessage id="manage-appointment.cancelReason" /></th>
                             )}
-                            {showActions && <th><FormattedMessage id="manage-appointment.actions" /></th>}
+                            {(showActions || activeTab === 'pending') && (
+                                <th><FormattedMessage id="manage-appointment.actions" /></th>
+                            )}
                         </tr>
                     </thead>
                     <tbody>
@@ -237,7 +247,7 @@ class AdminBookingManagement extends Component {
                                 {title.props.id === "manage-appointment.canceled" && (
                                     <td>{booking.cancelReason || 'Không có lý do'}</td>
                                 )}
-                                {showActions && (
+                                {(showActions || activeTab === 'pending') && (
                                     <td>
                                         <button className="btn-confirm" onClick={() => this.handleVerifyBooking(booking.token, booking.doctorId)}>
                                             <i className="fas fa-check"></i>
@@ -253,7 +263,6 @@ class AdminBookingManagement extends Component {
                 </table>
             </div>
         );
-
 
 
         return (
@@ -275,6 +284,9 @@ class AdminBookingManagement extends Component {
                         <button onClick={() => this.handleTabChange('canceled')}>
                             <FormattedMessage id="manage-appointment.canceled" />
                         </button>
+                        <button onClick={() => this.handleTabChange('pending')}>
+                            <FormattedMessage id="manage-appointment.pending" />
+                        </button>
                     </div>
 
                     {/* Hiển thị bảng dựa trên activeTab */}
@@ -282,6 +294,9 @@ class AdminBookingManagement extends Component {
                     {activeTab === 'confirmed' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.confirmed" />, false)}
                     {activeTab === 'completed' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.completed" />, false)}
                     {activeTab === 'canceled' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.canceled" />, false)}
+                    {activeTab === 'pending' && renderTable(currentBookings, <FormattedMessage id="manage-appointment.pending" />, true)}
+
+
 
                     {/* Phân trang */}
                     <div className="pagination">

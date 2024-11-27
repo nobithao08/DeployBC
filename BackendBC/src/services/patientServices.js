@@ -3,6 +3,8 @@ import db from "../models/index";
 require('dotenv').config();
 import emailService from './emailService';
 import { v4 as uuidv4 } from 'uuid';
+const { Op } = require('sequelize');
+
 
 let buildUrlEmail = (doctorId, token) => {
     let result = `${process.env.URL_REACT}/verify-booking?token=${token}&doctorId=${doctorId}`
@@ -92,7 +94,9 @@ let postVerifyBookAppointment = async (data) => {
                     where: {
                         doctorId: data.doctorId,
                         token: data.token,
-                        statusId: 'S1'
+                        statusId: {
+                            [Op.or]: ['S1', 'S5']
+                        }
                     },
                     include: [
                         {
@@ -221,7 +225,9 @@ let cancelBooking = async (id, reason) => {
         let booking = await db.Booking.findOne({
             where: {
                 id: id,
-                statusId: 'S1',
+                statusId: {
+                    [Op.or]: ['S1', 'S5']
+                }
             },
             raw: false
         });
@@ -250,12 +256,43 @@ let cancelBooking = async (id, reason) => {
     }
 };
 
+const rescheduleBookingService = async (id, date, timeType) => {
+    try {
+        const booking = await db.Booking.findOne({ where: { id: id } });
 
+        if (!booking) {
+            return { success: false, message: 'Lịch hẹn không tồn tại' };
+        }
+
+        const parsedDate = new Date(date);
+
+        if (isNaN(parsedDate.getTime())) {
+            return { success: false, message: 'Ngày không hợp lệ' };
+        }
+
+        const timestamp = parsedDate.getTime();
+
+        await db.Booking.update(
+            {
+                date: timestamp,
+                timeType: timeType,
+                statusId: 'S5',
+            },
+            {
+                where: { id: id },
+            }
+        );
+        return { success: true, message: 'Cập nhật lịch thành công' };
+    } catch (error) {
+        console.error("Lỗi trong service rescheduleBookingService:", error);
+
+    }
+};
 
 module.exports = {
     postBookAppointment: postBookAppointment,
     postVerifyBookAppointment: postVerifyBookAppointment,
     getAllBookings: getAllBookings,
     getUserByEmail: getUserByEmail,
-    cancelBooking
+    cancelBooking, rescheduleBookingService
 }

@@ -91,10 +91,38 @@ let cancelBooking = async (req, res) => {
     }
 };
 
+const rescheduleBooking = async (req, res) => {
+    try {
+        const { id, date, timeType } = req.body;
+
+        const validDate = new Date(date);
+
+        const result = await patientService.rescheduleBookingService(id, validDate, timeType);
+
+        if (result.success) {
+            return res.status(200).json({
+                success: true,
+                message: 'Dời lịch thành công',
+                data: {
+                    id,
+                    date,
+                    timeType,
+                },
+            });
+        } else {
+            return res.status(400).json({ success: false, message: result.message });
+        }
+    } catch (error) {
+        console.error('Lỗi trong controller rescheduleBooking:', error);
+        return res.status(500).json({ success: false, message: 'Đã có lỗi xảy ra, vui lòng thử lại sau.' });
+    }
+};
+
+
 module.exports = {
     postBookAppointment: postBookAppointment,
     postVerifyBookAppointment: postVerifyBookAppointment,
     getAllBookings: getAllBookings,
     handleGetUserByEmail: handleGetUserByEmail,
-    cancelBooking
+    cancelBooking, rescheduleBooking
 }

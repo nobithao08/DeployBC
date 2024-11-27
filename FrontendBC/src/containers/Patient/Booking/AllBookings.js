@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getAllBookings, cancelBooking } from '../../../services/userService';
+import { getAllBookings, cancelBooking, rescheduleBooking } from '../../../services/userService';
 import './AllBookings.scss';
 import HomeHeader from '../../HomePage/HomeHeader';
 import { toast } from 'react-toastify';
 import Modal from 'react-modal';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 class AllBookings extends Component {
     constructor(props) {
@@ -18,6 +20,9 @@ class AllBookings extends Component {
             showCancelModal: false,
             cancelReason: '',
             bookingToCancel: null,
+            showRescheduleModal: false,
+            newDate: new Date(),
+            newTime: '',
             hasCanceledBookings: false,
         };
     }
@@ -117,8 +122,96 @@ class AllBookings extends Component {
         }
     };
 
+    handleRescheduleBooking = (booking) => {
+        this.setState({
+            showRescheduleModal: true,
+            bookingToReschedule: booking,
+            newDate: new Date(Number(booking.date)),
+            newTime: booking.timeType,
+        });
+    };
+
+    handleCloseRescheduleModal = () => {
+        this.setState({ showRescheduleModal: false, newDate: new Date(), newTime: '' });
+    };
+
+    handleSubmitReschedule = async () => {
+        const { newDate, newTime, bookingToReschedule } = this.state;
+        const timestamp = newDate.getTime();
+
+        try {
+            const payload = {
+                id: bookingToReschedule.id,
+                date: timestamp,
+                timeType: newTime,
+            };
+
+            const res = await rescheduleBooking(payload);
+
+            if (res && res.success) {
+                toast.success("Dời lịch hẹn thành công.");
+                this.setState({
+                    showRescheduleModal: false,
+                    newDate: new Date(),
+                    newTime: '',
+                });
+
+                // Cập nhật trạng thái trong danh sách bookings
+                this.setState((prevState) => ({
+                    bookings: prevState.bookings.map((booking) =>
+                        booking.id === bookingToReschedule.id
+                            ? { ...booking, date: timestamp, timeType: newTime, statusId: 'S5' } // Cập nhật ngày, giờ và trạng thái mới
+                            : booking
+                    ),
+                    showRescheduleModal: false,
+                    newDate: new Date(),
+                    newTime: '',
+                }));
+
+            } else {
+                toast.success("Dời lịch hẹn thành công.");
+            }
+        } catch (error) {
+            console.error("Lỗi khi gọi API:", error);
+            // toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+        }
+    };
+
+    isTimeAvailable = (timeSlot) => {
+        const now = new Date();
+        const selectedDate = new Date(this.state.newDate);
+
+        if (selectedDate.toDateString() === now.toDateString()) {
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            const [hours, minutes] = this.getTimeFromSlot(timeSlot);
+
+            if (hours < currentHour || (hours === currentHour && minutes <= currentMinute)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    getTimeFromSlot = (slot) => {
+        const timeMapping = {
+            T1: [8, 0],
+            T2: [9, 0],
+            T3: [10, 0],
+            T4: [11, 0],
+            T5: [13, 0],
+            T6: [14, 0],
+            T7: [15, 0],
+            T8: [17, 0],
+        };
+        return timeMapping[slot] || [0, 0];
+    };
+
+
     render() {
-        const { bookings, loading, error, email, showCancelModal, cancelReason, hasCanceledBookings } = this.state;
+        const { bookings, loading, error, email, showCancelModal, cancelReason, hasCanceledBookings, showRescheduleModal, newDate, newTime } = this.state;
+        console.log("Ngày chọn:", newDate.getTime());
 
         return (
             <div>
@@ -174,6 +267,14 @@ class AllBookings extends Component {
                                                             Hủy lịch
                                                         </button>
                                                     )}
+                                                    {booking.statusId === 'S2' && (
+                                                        <button
+                                                            className="btn-reschedule"
+                                                            onClick={() => this.handleRescheduleBooking(booking)}
+                                                        >
+                                                            Dời lịch
+                                                        </button>
+                                                    )}
                                                 </td>
                                                 {hasCanceledBookings && (
                                                     <td>
@@ -193,6 +294,42 @@ class AllBookings extends Component {
                         )}
                     </div>
                 </div>
+
+                <Modal
+                    isOpen={showRescheduleModal}
+                    onRequestClose={this.handleCloseRescheduleModal}
+                    contentLabel="Reschedule Booking"
+                    ariaHideApp={false}
+                    className="reschedule-modal-content"
+                    overlayClassName="reschedule-modal-overlay"
+                >
+                    <h3>Chọn thời gian mới</h3>
+                    <DatePicker
+                        selected={newDate}
+                        onChange={(date) => this.setState({ newDate: date })}
+                        dateFormat="dd/MM/yyyy"
+                        minDate={new Date()}
+                    />
+                    <select
+                        value={newTime}
+                        onChange={(e) => this.setState({ newTime: e.target.value })}
+                    >
+                        <option value="">Chọn thời gian</option>
+                        {['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8'].map((timeSlot) => (
+                            <option
+                                key={timeSlot}
+                                value={timeSlot}
+                                disabled={!this.isTimeAvailable(timeSlot)}
+                            >
+                                {this.getTimeDisplay(timeSlot)}
+                            </option>
+                        ))}
+                    </select>
+                    <div className="modal-buttons">
+                        <button className="reschedule-btn" onClick={this.handleSubmitReschedule}>Dời lịch</button>
+                        <button className="close-btn" onClick={this.handleCloseRescheduleModal}>Đóng</button>
+                    </div>
+                </Modal>
 
                 <Modal
                     isOpen={showCancelModal}
@@ -222,6 +359,7 @@ class AllBookings extends Component {
             case 'S2': return 'Đã xác nhận';
             case 'S3': return 'Hoàn thành';
             case 'S4': return 'Đã hủy';
+            case 'S5': return 'Yêu cầu dời lịch';
             default: return 'Không xác định';
         }
     }

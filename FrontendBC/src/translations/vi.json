@@ -121,6 +121,7 @@
         "confirmed": "Đã xác nhận",
         "completed": "Đã khám xong",
         "canceled": "Đã hủy",
+        "pending": "Yêu cầu đổi lịch",
         "patientName": "Tên bệnh nhân",
         "email": "Email",
         "phone": "Số điện thoại",

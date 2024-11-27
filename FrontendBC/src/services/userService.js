@@ -140,6 +140,10 @@ const cancelBooking = async (data) => {
     return await axios.post('/api/cancel-booking', data);
 };
 
+const rescheduleBooking = async (data) => {
+    return await axios.post('/api/reschedule-booking', data);
+};
+
 
 export {
     handleLoginApi, getAllUsers,
@@ -158,5 +162,5 @@ export {
     getAllPatientForDoctor, postSendRemedy,
     getAllBookings, searchSpecialty,
     getStatsByMonth, getDoctorStatsByMonth, getUserByEmail,
-    cancelBooking
+    cancelBooking, rescheduleBooking
 }

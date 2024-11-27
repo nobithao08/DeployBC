@@ -121,6 +121,7 @@
         "confirmed": "Confirmed",
         "completed": "Check done",
         "canceled": "Canceled",
+        "pending": "Request a reschedule",
         "patientName": "Patient name",
         "email": "Email",
         "phone": "Phone number",

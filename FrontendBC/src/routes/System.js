@@ -33,9 +33,6 @@ class System extends Component {
                             <Route path="/system/appointment-chart" component={ManageChart} />
                             <Route path="/system/doctor-chart" component={ManageChartDoctor} />
 
-
-
-
                             <Route component={() => { return (<Redirect to={systemMenuPath} />) }} />
                         </Switch>
                     </div>
