@@ -156,11 +156,10 @@ class AllBookings extends Component {
                     newTime: '',
                 });
 
-                // Cập nhật trạng thái trong danh sách bookings
                 this.setState((prevState) => ({
                     bookings: prevState.bookings.map((booking) =>
                         booking.id === bookingToReschedule.id
-                            ? { ...booking, date: timestamp, timeType: newTime, statusId: 'S5' } // Cập nhật ngày, giờ và trạng thái mới
+                            ? { ...booking, date: timestamp, timeType: newTime, statusId: 'S5' }
                             : booking
                     ),
                     showRescheduleModal: false,
@@ -173,7 +172,6 @@ class AllBookings extends Component {
             }
         } catch (error) {
             console.error("Lỗi khi gọi API:", error);
-            // toast.error("Có lỗi xảy ra, vui lòng thử lại.");
         }
     };
 
