@@ -21,6 +21,8 @@ const ManageChartDoctor = () => {
         },
         yaxis: {
             min: 0,
+            max: 10,
+            tickAmount: 5,
             labels: {
                 formatter: (value) => parseInt(value),
             },

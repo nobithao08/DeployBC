@@ -57,8 +57,8 @@ const ManageChart = () => {
         },
         yaxis: {
             min: 0,
-            max: 4,
-            tickAmount: 4,
+            max: 20,
+            tickAmount: 10,
             labels: {
                 formatter: (value) => parseInt(value),
             },
